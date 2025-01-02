@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        input,select{
+            display: inline-block;
+            margin-left: 0%;   
+            height: fit-content;
+            width: fit-content;
+            font-size: 28px;
+        }
+        label{
+    display:block;
+        }
+        div{
+            max-width: 95%;
+            overflow-x: scroll;
+        }
+        input,select{
+            display: inline-block;
+            margin-left: 0%;   
+        }
+        .new{
+            border: 2px solid black;
+        }
+        .moduleSel{
+            margin-left:0%;
+        }
+        .tableInput{
+            appearance: none;
+            border: none;
+        }
+        .fade-element {
+            background-color: white;
+    opacity: 0; 
+    transition: opacity 1s ease-in-out; 
+    max-height: 140px;
+    border:2px solid yellow;
+}
+
+.fade-element label,input,select{
+    margin-left: 2px;
+}
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-out{
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.inputContainer {
+    margin-top: 15px;
+    display: flex;
+}
+.inputContainer input {
+    flex: 1;
+    margin-bottom: 10px;
+}
+
+table{
+    margin: 0;
+    border-bottom: solid black 5px;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: center;
+    background-color: white;
+    
+}
+.datum-header{
+    border: 0px;
+    border-bottom: solid black 5px;
+}
+td{
+    border-bottom: 2px black solid;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+@media screen and (max-width: 990px) {
+    input,select{
+            display: inline-block;
+            margin-left: 0%;   
+            height: fit-content;
+            width: fit-content;
+            font-size: 16px;
+        }
+}
+
+.FormContainer2{
+    width: fit-content;
+    padding: 5px;
+    overflow-x: hidden;
+}
+
+.FormContainer{
+    max-height: 420px;
+    border: 5px solid rgba(219, 177, 50, 0.2);
+    overflow-y: auto;
+}
+
+.stick{
+    margin-left: 0;
+    position:sticky; 
+    width: 200px;
+    left: 0;
+    z-index: 2;
+    background-color: white;
+    border-right: solid 1px black;
+}
+
+.stick::after{
+    position: absolute;
+    width: 200px;
+    content:"";
+    right: -6px;
+  top: 0;
+  bottom: 1px;
+  width: 5px;
+}
+.stick::before{
+content: "";
+  position: absolute;
+  left: -10px;
+  top: 2;
+  bottom: 1px;
+  width: 10px;
+  height: 50px;
+  background-color: white;
+}
+
+table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  width: 50px;
+  background-color:#0099FF;
+  border-bottom: black solid 5px;
+  border-right: solid 1px black;
+}
+table thead th:first-child::before {
+  position: absolute;
+  content: "";
+  height: 10px;
+            top:-5px;
+            width:101%;
+            left:-0.1px;
+  background-color:#0099FF;
+  border-right: solid 1px black;
+}
+table thead th:first-child::after {
+  position: absolute;
+  content: " ";
+  width: 10px;
+  height: 56.5px;
+            left:-5px;
+            top:-4.9px;
+  background-color:#0099FF;
+  border-bottom: black solid 5px;
+  
+}
+
+.stickH{
+            position:sticky;
+            top:0;
+            background-color:#0099FF;
+            border-bottom: black solid 5px;
+            z-index: 3;
+            height: 50px;
+            
+        }
+        .stickH::before{
+            content:"";
+            position: absolute;
+            background-color:#0099FF;
+            height: 10px;
+            top:-5px;
+            width:101%;
+            left:-1px;
+        }
+        
+        select:disabled{
+    color:rgb(0, 0, 0);
+    font-weight: 750;
+}
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Applicant Accounts</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Applicant List</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/login">Log Out</a>
+        <a href="/admin/">Return Home</a>
+        <a href="/admin/exam">Edit The Exam</a>
+        <a href="/admin/users">Manage Users</a>
+        </div>
+        </header>
+    <div class="FormContainer">
+        <table>
+            <thead>
+                <th class="stickH"></th>
+                <th class="stickH">Username</th>
+                <th class="stickH">Email</th>
+                <th class="stickH"id="pass" hidden>Password</th>
+                <th class="stickH">Full Name<br><span style="font-size: 9px;">First Name- Last Name</span></th>
+                <th class="stickH">Employee Type</th>
+                <th class="stickH">Specialization</th>
+                <th class="stickH">Gender</th>
+                <th class="stickH">Phone Number</th>
+                <th class="stickH">Exam Status</th>
+                <th class="stickH">User Status</th>
+                <th class="stickH">Exam Schedule</th>
+                <th class="stickH">Date Registered</th>
+            </thead>
+            <tbody id="datum">
+                
+            </tbody>
+        </table>
+    </div>
+    <div class="FormContainer2">
+    <button id="shelfHandle" onclick="appear()">Add Record</button>
+    
+    <div id="shelf" class="fade-element" hidden>
+        <form>
+            <label>Username</label>
+            <input class="new" name="new" id="nuID" oninput="resize.call(this)">
+            <label>Email</label>
+            <input class="new" name="new" id="nuEmail" oninput="resize.call(this)">
+            <label>Password</label>
+            <input class="new" name="new" id="nuPass" oninput="resize.call(this)">
+            <label>First Name</label>
+            <input name="new" class="new" oninput="resize.call(this); letterOnly(this)" id="nuNamef">
+            <label>Last Name</label>
+            <input name="new" class="new" oninput="resize.call(this); letterOnly(this)" id="nuNamel">
+            <label>User Type</label>
+            <select class="new" id="nuTypeSel">
+                <option></option>
+                <option value="Student">Student</option>
+                <option value="Professional">Professional</option>
+            </select>
+            <label>User Specialization</label>
+            <select class="new" id="nuClassSel">
+                <option></option>
+                <option value="Admin">Admin</option>
+                <option value="Technical">Technical</option>
+                <option value="Programming">Programming</option>
+            </select>
+            <label>Gender</label>
+            <select class="new" id="nuGenderSel">
+                <option></option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <label>Phone Number</label>
+            <input name="new" class="new" id="nuPhoNo" type="number" oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11); resize.call(this)">
+            <label>Exam Schedule</label>
+            <input name="new" class="new" id="nuExamDate" type="date" oninput="javascript:if(this.valueAsDate < new Date()) this.valueAsDate=new Date()">
+        </form>
+        <button type="button" onclick="validator()">Submit</button>
+    </div>
+    <br>
+    <select id="uIDSel" class="moduleSel">
+        <option>uID1</option>
+        <option>uID2</option>
+    </select>
+    <button onclick="deleteU()">Delete Record</button>
+    <p id="prompt" class="loadPrompt" hidden>LOADING. . .</p>
+</div>
+    
+    <input type="date" class="new" disabled style="color: transparent; user-select: none; border: none;" id="nuDateCreated">
+</body>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+<script>
+
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+    promptE.style.display="block;"
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+    let stopkey;
+
+    function letterOnly(element) {
+    const input = element.value;
+    const regex = /^[A-Za-z]+$/;
+    
+    if (!regex.test(input)) {
+        element.value = input.replace(/[^A-Za-z]/g, '');
+    }
+}
+
+let idArr=[]
+const tbl=document.getElementById('datum')
+    fetch('/user-data').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error('Error Fetching Data. Check the Terminal')
+        }
+    }).then(data=>{
+        let x=1;
+        var table=document.getElementById('datum')
+        var userList=document.getElementById('uIDSel')
+            userList.innerHTML=``
+        data.forEach(item=>{
+            idArr.push(item.uID)
+            let name=item.uName.split(" ")
+            const r=document.createElement(`tr`)
+            let fDT=new Date(item.uDateCreated)
+            let ffDT=new Date(item.uExamSched)
+            let month,month2,day,day2
+            if((parseInt(ffDT.getMonth())+1)>=10){
+                month2=ffDT.getMonth()+1
+            }else{
+                month2=String(ffDT.getMonth()+1).padStart(2,'0')
+            }
+            if((parseInt(fDT.getDate)+1)>=10){
+                day2=ffDT.getDate()
+            }else{
+                day2=String(ffDT.getDate()).padStart(2,'0')
+            }
+            if((parseInt(fDT.getMonth())+1)>=10){
+                month=fDT.getMonth()+1
+            }else{
+                month=String(fDT.getMonth()+1).padStart(2,'0')
+            }
+            if((parseInt(fDT.getDate)+1)>=10){
+                day=fDT.getDate()
+            }else{
+                day=String(fDT.getDate()).padStart(2,'0')
+            }
+            r.innerHTML=`
+            <td class="stick" ><button id="edit${x}" onclick="edit('edit${x}')">Edit</td>
+            <td><input name="edit${x}" id="uID" class="tableInput" value="${item.uID}" readonly></td>
+            <td>
+                <input name="edit${x}" value="${item.uEmail}" class="tableInput" readonly>
+            </td>
+            <td hidden id="pass"><input id="uPass" name="edit${x}" value="${item.uPass}"></td>
+            <td class="inputContainer">
+                <input name="edit${x}" value="${name[0]}" id="uNameF" class="tableInput" oninput="letterOnly(this)" readonly><input name="edit${x}" id="uNameL" value="${name[1]}" class="tableInput" oninput="letterOnly(this)" readonly>
+            </td>
+            <td><select name="edit${x}" id="uType" class="tableInput">
+                <option></option>
+                <option value="Student">Student</option>
+                <option value="Professional">Professional</option>
+            </select>
+            </td>
+            <td><select name="edit${x}" id="uClass" class="tableInput">
+                <option></option>
+                <option value="Admin">Admin</option>
+                <option value="Technical">Technical</option>
+                <option value="Programming">Programming</option>
+            </select>
+            </td>
+            <td><select name="edit${x}" class="tableInput" id="uGender">
+                <option></option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            </td>
+            <td><input name="edit${x}" class="tableInput" value=${item.uPhoNo}  type="number" oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11);" readonly></td>
+            <td><select name="edit${x}" id="uExamStat" class="tableInput">
+                <option></option>
+                <option value="Untaken">Untaken</option>
+                <option value="Graded">Taken</option>
+                <option value="Retake">Retake</option>
+                </select>
+                </td>
+            <td>
+                <select name="edit${x}" id="uStat" class="tableInput">
+                <option></option>
+                <option value="Unverified">Unverified</option>
+                <option value="Verified">Verified</option>
+                </select>    
+            </td>
+            <td><input name="edit${x}" id="uExamDate" type="date" value="${ffDT.getFullYear()}-${month2}-${day2}" class="tableInput" readonly></td>
+            <td><input name="edit${x}" id="uDate" type="date" value="${fDT.getFullYear()}-${month}-${day}" class="tableInput" readonly></td>
+            `
+            table.appendChild(r)
+            var q=document.querySelectorAll(`select[ name='edit${x}']`)
+            q[0].value=item.uType
+            q[0].disabled=true
+            q[1].value=item.uClass
+            q[1].disabled=true
+            q[2].value=item.uGender
+            q[2].disabled=true
+            q[3].value=item.uExamStat
+            q[3].disabled=true
+            q[4].value=item.uStat
+            q[4].disabled=true
+            fetchResize()
+            x=parseInt(x)+1
+            const option=document.createElement('option')
+            option.value=item.uID
+            option.textContent=item.uName
+            userList.appendChild(option)
+            userList.addEventListener('change',resizeSel)
+        resizeSel.call(userList)
+        })
+        if(!tbl.innerHTML.includes('td')){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="11" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tbl.appendChild(row)
+        }
+    })
+
+    function fetchResize(){
+        const uNameInputs = document.querySelectorAll(`[name^="edit"]`);
+     uNameInputs.forEach(input => {
+        input.addEventListener('input', resize);
+        resize.call(input); 
+    });
+        
+    const selecto=document.querySelectorAll('select')
+    selecto.forEach(select=>{
+        select.addEventListener('change',resizeSel)
+        resizeSel.call(select)
+    })
+
+    } 
+
+    function resize() {
+        if(this.value.length<10 || this.id=="uPhoNo"){
+            this.style.width = (this.value.length+3) + "ch";
+        }else if(this.id=="uID" && this.value.length<=11){
+            this.style.width=(this.value.length+1)+"ch";
+        }else if(this.id="uDate")
+        {
+            this.style.width = (this.value.length+4) + "ch";
+        }else{
+                this.style.width =(this.value.length+1)+"ch";
+            }
+    }
+    function resizeSel() {
+        this.style.width = (this.value.length+3) + "ch"; 
+        if(this.classList=="moduleSel"){
+            if(this.options.length>1){
+                if(this.options[this.selectedIndex].textContent.length<10){
+                    this.style.width = (this.options[this.selectedIndex].textContent.length + 4) + "ch";
+                }else{
+                    this.style.width = (this.options[this.selectedIndex].textContent.length + 3) + "ch";
+                }
+
+            }else{
+                this.style.width = (this.textContent.length + 3) + "ch";   
+            }
+        }
+    }
+
+    let moved=0;
+    let prevMov;
+    function edit(lane){
+        moved=parseInt(moved)+1;
+        if(moved>1 && prevMov){
+            shift(prevMov)
+        }
+    const stuff = document.querySelectorAll(`[name="${lane}"]`); 
+    stuff.forEach(item => {
+        item.style="border: solid 1px black; appearance: auto;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        item.readOnly = false; 
+        item.disabled = false; 
+    });
+    document.getElementById(lane).innerHTML="Update"
+    document.getElementById(lane).onclick=function(){
+        update(lane)
+    }
+    appearPass(lane)
+    prevMov=lane
+}
+
+function update(lane){
+    const stuff = document.querySelectorAll(`[name="${lane}"]`);
+    let itemList=[] 
+    stuff.forEach(item => {
+        itemList.push(item.value)
+        item.style="border: none; appearance: none;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        item.readOnly = true; 
+        item.disabled = true; 
+    });
+    const update={
+        uIDnu:itemList[0],
+        uID:idArr[parseInt(lane[4])-1],
+        uEmail:itemList[1],
+        uPass:itemList[2],
+        uName:itemList[3]+" "+itemList[4],
+        uType:itemList[5],
+        uClass:itemList[6],
+        uGender:itemList[7],
+        uPhoNo:itemList[8],
+        uExamStat:itemList[9],
+        uStat:itemList[10],
+        uExamSched:itemList[11],
+        uDateCreated:itemList[12]
+    }
+        updateU(update)
+    document.getElementById(lane).innerHTML="Edit"
+    document.getElementById(lane).onclick=function(){
+        edit(lane)
+    }
+    disappearPass()
+}
+
+function shift(lane){
+    const stuff = document.querySelectorAll(`[name="${lane}"]`);
+    stuff.forEach(item => {
+        item.style="border: none; appearance: none;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        item.readOnly = true; 
+        item.disabled = true; 
+    });
+    document.getElementById(lane).innerHTML="Edit"
+    document.getElementById(lane).onclick=function(){
+        edit(lane)
+    }
+    disappearPass()
+}
+
+var hide=false;
+function appear(){
+    document.getElementById('shelf').hidden=false;
+    document.getElementById('shelf').classList.add('fade-in')
+    document.getElementById('shelf').classList.remove('fade-out')
+    document.getElementById('shelfHandle').textContent="Cancel"
+    document.getElementById('shelfHandle').onclick=function(){
+        hide=true
+        disappear()
+    }
+}
+function disappear(){
+    document.getElementById('shelf').classList.add('fade-out')
+    document.getElementById('shelf').classList.remove('fade-in')
+    document.getElementById('shelf').addEventListener('animationend',function(){
+        if(hide){
+            hide=false
+        document.getElementById('shelf').hidden=true
+        }
+    },{ once: true });
+    document.getElementById('shelfHandle').textContent="Add Record"
+    document.getElementById('shelfHandle').onclick=function(){
+        appear()
+    }
+}
+
+var hideP=false;
+function appearPass(name){
+    const p=document.querySelectorAll('[id="pass"]')
+    
+    let x=0
+    p.forEach((item)=>{
+        item.hidden=false
+        if(item.innerHTML.includes('input')){
+            if(item.innerHTML.includes(name)){
+            }else{
+                    let e=item.querySelectorAll('input')
+                e.forEach(input=>{
+                    input.style.display="none"
+                input.readOnly=true
+                })
+            }
+        }
+        x=parseInt(x)+1  
+    })
+}
+function disappearPass(){
+    const p=document.querySelectorAll('[id="pass"]')
+    p.forEach((item)=>{
+        item.hidden=true
+    })
+}
+
+const newID=document.getElementById('nuID')
+const newEmail=document.getElementById('nuEmail')
+const newPass=document.getElementById('nuPass')
+const newNameF=document.getElementById('nuNamef')
+const newNameL=document.getElementById('nuNamel')
+const newType=document.getElementById('nuTypeSel')
+const newClass=document.getElementById('nuClassSel')
+const newGender=document.getElementById('nuGenderSel')
+const newPhoNo=document.getElementById('nuPhoNo')
+const newStat="Unverified"
+const newExamStat="Untaken"
+const dt=new Date()
+const newDateCreated=document.getElementById('nuDateCreated')
+const newExamSched=document.getElementById('nuExamDate')
+
+var today=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()+1)
+newDateCreated.valueAsDate=today
+
+function validator(){
+    stopkey=loadingLoop()
+    if(newID.value!="" && newPass.value!="" && newNameF.value!="" && newNameL.value!="" && newType.options[newType.selectedIndex].value!="" && newGender.options[newGender.selectedIndex].value!="" && newPhoNo.value!="" && newPhoNo.value.length==11 && newEmail.value!="" && newPhoNo.value[0]==0 && newPhoNo.value[1]==9 && newEmail.value.includes("@") && newClass.options[newClass.selectedIndex].value!=""){
+        const data={
+            uID:newID.value,
+            uName:newNameF.value+" "+newNameL.value,
+            uEmail:newEmail.value,
+            uPass:newPass.value,
+            uType:newType.options[newType.selectedIndex].value,
+            uClass:newClass.options[newClass.selectedIndex].value,
+            uGender:newGender.options[newGender.selectedIndex].value,
+            uPhoNo:newPhoNo.value,
+            uExamSched:newExamSched.value,
+            uExamStat:newExamStat,
+            uStat:newStat,
+            uDateCreated:newDateCreated.value
+        } 
+        return insertU(data)
+    }else{
+        alert("please fill in all the necessary fields correctly")
+        stop(stopkey)
+    }
+}
+
+//#region server side
+
+async function insertU(data){
+    const response=await fetch('/insertUser',{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+    })
+    const result=await response.json()
+    if(response.ok){
+        alert("Document Inserted!")
+        let log="has created a new account for "+data.uName
+        let type="Inserting"
+        insertL(log,type)
+    }else{
+        alert("Something went wrong")
+        stop(stopkey)
+    }
+}
+
+async function updateU(datum){
+    const base=await searchU(datum.uID)
+    if(base=="no"){
+        alert("ID not found!")
+    }
+    let send={
+        uID:base.uID
+    }
+    console.log(base)
+    console.log(datum)
+    Object.keys(base).forEach((item)=>{
+        if(item=="uExamSched" || item=="uDateCreated"){
+            let dtf=new Date(base[item])
+    let dtnu=new Date(datum[item])
+    let monthf,monthnu,dayf,daynu,dateF,dateNU
+    if((parseInt(dtf.getMonth())+1)>=10){
+        monthf=dtf.getMonth()+1
+    }else{
+        monthf=String(dtf.getMonth()+1).padStart(2,'0')
+    }
+    if((parseInt(dtf.getDate)+1)>=10){
+        dayf=dtf.getDate()
+    }else{
+        dayf=String(dtf.getDate()).padStart(2,'0')
+    }
+    dateF=monthf+"/"+dayf+"/"+dtf.getFullYear()
+    if((parseInt(dtnu.getMonth())+1)>=10){
+        monthnu=dtnu.getMonth()+1
+    }else{
+        monthnu=String(dtnu.getMonth()+1).padStart(2,'0')
+    }
+    if((parseInt(dtnu.getDate)+1)>=10){
+        daynu=dtnu.getDate()
+    }else{
+        daynu=String(dtnu.getDate()).padStart(2,'0')
+    }
+    dateNU=monthnu+"/"+daynu+"/"+dtnu.getFullYear()
+    if(dateF!=dateNU){
+        send[item]=datum[item]
+    }
+        }else{
+            if(base[item]!=datum[item]){
+            send[item]=datum[item]
+            }
+        }
+    })
+    if(Object.keys(send).length!=1){
+        stopkey=loadingLoop()
+        try{
+            const response=await fetch('/updateUser',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(send)
+        })
+    const result=await response.json()
+    if(response.ok){
+        alert("Document Updated!!")
+        let log="has updated "+datum.uName+"'s Account Details"
+        let type="Updating"
+        insertL(log,type)
+    }
+        }catch(err){
+            alert(err)
+            stop(stopkey)
+        }
+    }
+}
+
+async function searchU(ID){
+    const response=await fetch(`/searchUser?uID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        const dataF={
+            uID:result[0].uID,
+            uEmail:result[0].uEmail,
+            uName:result[0].uName,
+            uPass:result[0].uPass,
+            uGender:result[0].uGender,
+            uPhoNo:result[0].uPhoNo,
+            uType:result[0].uType,
+            uClass:result[0].uClass,
+            uStat:result[0].uStat,
+            uExamSched:result[0].uExamSched,
+            uDateCreated:result[0].uDateCreated
+        }
+        return dataF
+    }else{
+        return "no"
+    }
+}
+
+async function deleteU(){
+    stopkey=loadingLoop()
+    const source=document.getElementById('uIDSel')
+    let x=source.options[source.selectedIndex].value
+    let y=source.options[source.selectedIndex].textContent
+    const data={
+        uID:x
+    }
+    try{
+        const response=await fetch('/deleteUser',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+    })
+    if(response.ok){
+        var log="has deleted applicant "+y+"'s profile"
+        var type="Deleting"
+        insertL(log,type)
+    }
+    }catch(err){
+        stop(stopkey)
+        alert(err)
+    }
+}
+
+async function insertL(logCont,logType){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*10)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.reload()
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+//#endregion
+fetch('/searchCurrentAdmin').then(response=>{
+    if(response.ok){
+        return response.json()
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then(data=>{
+    data.forEach(item=>{
+        if(item.aClass!="Admin"){
+            location.replace('/admin')
+        }
+    })
+})
+</script>
+</html>

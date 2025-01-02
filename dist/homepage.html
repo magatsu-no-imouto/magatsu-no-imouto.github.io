@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+label{
+    display:block;
+}
+div{
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+    width: 500px;
+
+}
+    </style>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">HOME</label>
+    </header>
+    <header class="don">
+    <div class="head">
+        <a href="/login">Login</a>
+    <a href="/registration">Register</a>
+    </div>
+    </header>
+    <div>
+        <h1>Welcome</h1>
+        <p style="text-align: center justify;">This is the Screening Exam Application for those aspiring to work at Provincial Government of Cavite's PICTO Department.
+        
+        Please Register an account to proceed. If you have an account and wish to see the status of your exam, please Login your account.</p>
+    </div>
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+
+<script>
+    fetch('/logout',{
+    method:'GET'
+}).then((response)=>{
+    if(response){
+        return
+    }
+    cookies.set('user',  { expires: expirationDate });
+})
+
+</script>
+</html>

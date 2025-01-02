@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+    <style>
+label{
+    display:block;
+}
+input{
+    margin-left: 2px;
+}
+form{
+    justify-content: center;
+    align-items: center;
+}
+div{
+    width: 300px;
+}
+.link{
+    border:none;
+    color:blue;
+    background-color:transparent;
+}
+button{
+    margin-top: 2px;
+    display: block;
+}
+    </style>
+<link rel="stylesheet" href="/style.css">
+<title>Recovering Password</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">PASSWORD RECOVERY</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/">Home</a>
+        <a href="/login">Log In</a>
+        <a href="/registration">Registration</a>
+        </div>
+    </header>
+    <div class="FormContainer">
+        <form>
+            <label>Username</label>
+            <input id="uID" value="" readonly>
+            <label>New Password</label>
+            <input id="uNuPass" type="password" required>
+            <label>Confirm New Password</label>
+            <input id="uNuPassConf" type="password" required>
+            <button type="button" onclick="changeP()">Log In</button>
+            <p id="prompt" class="loadPrompt" hidden>LOADING, PLEASE WAIT. . .</p>
+        </form>
+    </div>
+    
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+    let stopkey;
+
+
+    const ID=document.getElementById('uID')
+    const Pass=document.getElementById('uNuPass')
+    const PassConf=document.getElementById('uNuPassConf')
+
+    async function changeP(){
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
+        const validityCheck=regex.test(Pass.value)
+        if(Pass.value==PassConf.value){
+            if(validityCheck==true){
+             if(Pass.value.length>=8){
+                document.getElementById('prompt').style.display="block"
+                stopkey=loadingLoop()
+                updateU(ID.value,Pass.value)
+             }else{
+                alert("Your Password should be at least 8 characters")
+             }   
+            }else{
+                alert("Your Password should contain numbers and special characters.")
+            }
+        }else{
+            alert("Both Passwords that are inputted should be similar")
+        }
+    }
+
+    async function updateU(User,Password){
+        const base=await searchU(User)
+        let send
+    if(base=="no"){
+        alert("ID not found!")
+        stop(stopkey)
+    }else if(base.uPass==Password){
+        const conf=confirm("This is your old password. Replace anyway?")
+        if(conf){
+            let send={
+            uID:User,
+            uPass:Password
+            }  
+        }else{
+            alert("Please remember the password you just inputted.")
+            return location.replace("/login")
+        }
+    }else{
+        send={
+        uID:User,
+        uPass:Password
+        }
+    }
+    if(Object.keys(send).length==1){
+        console.log("Update Cancelled")
+        return
+    }else{
+document.getElementById('prompt').style="visibility:auto;"
+        const response=await fetch('/updateUser',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(send)
+        })
+    const result=await response.json()
+    if(response.ok){
+        var log="has changed their password"
+        insertL(log)
+    }else{
+        stop(stopkey)
+    }
+    }
+    }
+    async function searchU(ID){
+    const response=await fetch(`/searchUser?uID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        const dataF={
+            uID:result[0].uID,
+            uPass:result[0].uPass
+        }
+        return dataF
+    }else{
+        return "no"
+    }
+    }
+
+    async function insertL(log){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*9)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:log,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:"Updating",
+            logUser:"USER"
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.replace('/login')
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<head>
+    <style>
+label{
+    width: fit-content;
+    display:block;
+}
+input{
+    margin-left: 2px;
+}
+form{
+    justify-content: center;
+    align-items: center;
+}
+
+.link{
+    border:none;
+    color:blue;
+    background-color:transparent;
+}
+button{
+    margin-top: 2px;
+    display: block;
+}
+
+form{
+    width: fit-content;
+}
+.FormContainer{
+    width: 250px;
+}
+    </style>
+<link rel="stylesheet" href="/style.css">
+<title>Recovering Password</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">PASSWORD RECOVERY</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/">Home</a>
+        <a href="/login">Log In</a>
+        <a href="/registration">Registration</a>
+        </div>
+    </header>
+    <div class="FormContainer">
+        <form>
+            <label>Username</label>
+            <input id="uID">
+            <label>Email Address</label>
+            <input id="uEmail" type="password" required>
+            <button type="button" onclick="searchU(document.getElementById('uID').value,document.getElementById('uEmail').value)">Log In</button>
+        </form>
+        <p id="prompt" class="loadPrompt" hidden>PROCESSING, PLEASE WAIT. . .</p>
+    </div>
+    
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+    let stopkey;
+    async function searchU(ID,Email){
+    const response=await fetch(`/searchUser?uID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        if(result[0].uEmail!=Email){
+            return alert("This is not your Email")
+        }else{
+            document.getElementById('prompt').hidden=false
+            stopkey=loadingLoop()
+            alert("Sending Email. . .")
+            return sendForgor(ID,result.uName,Email)
+        }
+    }else{
+        return alert("There is no account with that username.")
+    }
+    
+    }
+
+    async function sendForgor(ID,Name,Email){
+        const datum={
+            uID:ID,
+            uName:Name,
+            uEmail:Email
+        }
+        try{
+            const response=await fetch('/forgotNotif',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.replace("/login")
+            }
+        }catch(err){
+            console.log(error)
+            stop(stopkey)
+        }
+    }
+</script>
+</html>

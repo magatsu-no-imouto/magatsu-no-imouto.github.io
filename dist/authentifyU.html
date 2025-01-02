@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        header label{
+            margin-top: 0px;
+        }
+label{
+    margin-top: 2px;
+    display:block;
+    width: fit-content;
+}
+input{
+    
+    margin-left: 2px;
+    width: fit-content;
+    height: fit-content;
+    font-size: 32px;
+}
+form{
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+}
+.link{
+    border:none;
+    color:blue;
+    background-color:transparent;
+}
+button{
+    margin-top: 2px;
+    display: block;
+}
+@media screen and (max-width: 990px) {
+    input{
+    margin-left: 2px;
+    width: fit-content;
+    height: fit-content;
+}
+
+}
+    </style>
+<link rel="stylesheet" href="/style.css">
+<title>Authentication</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">TWO FACTOR AUTHENTICATION</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a onclick="logOut()">Sign Out</a>
+        </div>
+    </header>
+    <div class="FormContainer">
+        <form>
+            <label>Username</label>
+            <input id="iID" required disabled><button type="button" style="display:inline-block">Resend Code</button>
+            <label>Code</label>
+            <input id="iPass" type="password" required>
+            <label id="prompt" style="display: none;">LOADING, PLEASE WAIT</label>
+            <button type="button" onclick="login()">Log In</button>
+        </form>
+    </div>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+    function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+
+    let user=[]
+    const ID=document.getElementById('iID')
+    const Pass=document.getElementById('iPass')
+    fetch('/searchCurrentUser').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error('Error fetching data')
+        }
+    }).then(data=>{
+        user.push({uID:data[0].uID})
+        user.push({uName:data[0].uName})
+        user.push({uEmail:data[0].uEmail})
+        ID.value=data[0].uID
+        ID.style.width=parseInt(ID.value.length)+1+"ch";
+        sendAuthenticate()
+    })
+    
+    //to ensure logging in and out is possible even if there's no wifi(assuming that
+    //this system will be hosted on a local server as well), a bypass code is
+    //implemented. However, it only works on localhosts as even if one manages to
+    //guess this code, there's no guarantee that it'll load.
+    let code="NOWIFI"
+    //remove this if uneeded
+
+    async function sendAuthenticate(){
+        const datum={
+            Name:user[1].uName,
+            Email:user[2].uEmail
+        }
+        try{
+            const response=await fetch('/AuthentifyNotifU',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                code=result.authCode
+                console.log(code)
+                //remove this when deploying the thing
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+        function login(){
+            if(Pass.value==code){
+                alert("Authenticated. Logging in now.")
+                insertL()
+            }else{
+                alert("Incorrect code. Please read your Email closely.")
+            }
+        }
+        async function insertL(){
+        var log=`${user[1].uName} had logged in successfully.`
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*9)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:log,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:"Logging In"
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.replace('/user/')
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    async function logOut(){
+        fetch('/logout',{
+                    method:'GET'
+                }).then((response)=>{
+                    if(response){
+                        location.replace('/login')
+                    }
+                    cookies.set('user',  { expires: expirationDate });
+                    cookies.set('admin',  { expires: expirationDate });
+                    cookies.set('adminName',{ expires: expirationDate })
+                    cookies.set('userName',{ expires: expirationDate })
+                })
+    }
+
+</script>
+</html>

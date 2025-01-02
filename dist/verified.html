@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+label{
+    display:block;
+}
+div{
+    padding: 5px;
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+    width: 500px;
+}
+@media screen and (max-width: 990px) {}
+    </style>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">HOME</label>
+    </header>
+    <header class="don">
+    <div class="head">
+        <a href="/login">Login</a>
+    </div>
+    </header>
+<div>
+    <h1>Thank you for verifying your account!</h1>
+    <p style="text-align: center justify;">You may now proceed to the Log In page to access your account and take your exam.</p>
+</div>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+    var id='[object Object],[object Object]'
+    
+    async function searchU(ID){
+    const response=await fetch(`/searchUser?uID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        const dataF={
+            uID:result[0].uID,
+            uEmail:result[0].uEmail,
+            uName:result[0].uName,
+            uPass:result[0].uPass,
+            uGender:result[0].uGender,
+            uPhoNo:result[0].uPhoNo,
+            uType:result[0].uType,
+            uStat:result[0].uStat,
+            uExamSched:result[0].uExamSched
+        }
+        return dataF
+    }else{
+        return "no"
+    }
+}
+
+    async function insertL(){
+        let dat=await searchU(id)
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*10)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        const datum={
+            logID:logID,
+            logMssg:"Account "+dat.uName+" has been verified",
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:"Verifying Account",
+            logUser:"USER"
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    insertL()
+</script>
+</html>

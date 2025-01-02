@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<head>
+    <style>
+
+label{
+    margin-left: 5px;
+    margin-top: 5px;
+    display:block;
+}
+
+input,select{
+    font-size: 16px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.formContainer{
+    width: fit-content;
+}
+
+div{
+    width: 500px;
+    max-height: 69vh;
+    overflow-y: auto;
+}
+.link{
+    border:none;
+    color:blue;
+    background-color:transparent;
+}
+
+input[type="checkbox"]{
+    width: 20px;
+    height: 20px;
+}
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Account Registration</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">REGISTRATION</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/">Home</a>
+        <a href="/login">Login</a>
+        </div>
+        
+    </header>
+    <div class="FormContainer">
+        <form>
+            <label>Username</label>
+            <input id="uID" required>
+            <button type="button" onclick="generateID()">Generate Username</button>
+            <label>Email</label>
+            <input id="uEmail" required>
+            <label>First Name</label>
+            <input id="uNameF" oninput="letterOnly(this)" required>
+            <label>Last Name</label>
+            <input id="uNameL" oninput="letterOnly(this)" required>
+            <label>Password</label>
+            <input id="uPass" type="password" required>
+            <br><span style="font-size: 12px;">must be at least 8 characters with numbers and symbols/special characters</span>
+            <label>Confirm Password</label>
+            <input id="uPassC" type="password" required>
+            <label>Gender</label>
+            <select id="sel-uGender" required>
+                <option selected></option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <label>User Type</label>
+            <select id="sel-uType" required>
+                <option selected></option>
+                <option value="Student">Student</option>
+                <option value="Professional">Professional</option>
+            </select>
+            <label>Department</label>
+            <select id="sel-uClass" required>
+                <option selected></option>
+                <option value="Admin">Admin</option>
+                <option value="Technical">Technical</option>
+                <option value="Programmer">Programmer</option>
+            </select>
+            <label>Phone Number</label>
+            <input id="uPhoNo" type="number" oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11);" required>
+            <br>
+            <div style="background-color: white; margin:0px; word-wrap: normal; color: black;width: 490px;"><input id="uCheckbox" type="checkbox" value="Consent">By checking this box, and thus, completing the form, you consent to us obtaining your Email Address to be used for Email Notifications as per the<a class="link" href="https://www.officialgazette.gov.ph/2012/08/15/republic-act-no-10173/">Data Privacy Act.</a></div>
+            <button type="button" style="margin-top:10px;" onclick="validate()">Register</button>
+            <p style="margin-top: -5px;">Already have an account? <a class="link" href="/login">Click here!</a></p>
+        </form>
+        <p id="prompt" class="loadPrompt" hidden>LOADING, PLEASE WAIT. . .</p>
+    </div>
+    <input type="date" disabled style="color: transparent; user-select: none; border: none;" id="uDateCreated">
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+function letterOnly(element) {
+    const input = element.value;
+    const regex = /^[A-Za-z]+$/;
+    
+    if (!regex.test(input)) {
+        element.value = input.replace(/[^A-Za-z]/g, '');
+    }
+}
+
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+
+
+fetch('/logout',{
+    method:'GET'
+}).then((response)=>{
+    if(response){
+        return
+    }
+    cookies.set('user',  { expires: expirationDate });
+})
+
+    const verifStat="Unverified"
+    const examStat="Untaken"
+    let dt=new Date();
+    var today=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()+1)
+    const ID=document.getElementById('uID')
+    const email=document.getElementById('uEmail')
+    const fName=document.getElementById('uNameF')
+    const lName=document.getElementById('uNameL')
+    const pass=document.getElementById('uPass')
+    const passConf=document.getElementById('uPassC')
+    const PhoNo=document.getElementById('uPhoNo')
+    const type=document.getElementById('sel-uType')
+    const profClass=document.getElementById('sel-uClass')
+    const gender=document.getElementById('sel-uGender')
+    const dateCreate=document.getElementById('uDateCreated')
+    dateCreate.valueAsDate=today
+    const consent=document.getElementById('uCheckbox')
+    function generateID(){
+        if(lName.value=="" || lName.value==undefined){
+            alert("Please fill in your last name.")
+        }else{
+            const numeral=dateCreate.valueAsDate.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit' }).replace(/\//g,'')
+            const rng=Math.floor(Math.random()*10)
+            const rng2=Math.floor(Math.random()*10)
+            const rng3=Math.floor(Math.random()*10)
+            const rng4=Math.floor(Math.random()*10)
+            let id=lName.value+""+numeral+"-"+rng+""+rng2+""+rng3+""+rng4
+            ID.value=id
+        }
+    }
+
+    let stopKey;
+
+    function validate(){
+        
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
+        const passwordInput=regex.test(pass.value)
+        if(ID.value=="" || fName.value=="" || lName.value=="" || pass.value=="" || passConf.value=="" || PhoNo.value=="" || gender.options[gender.selectedIndex].value=="" || type.options[type.selectedIndex].value=="" || profClass==""){
+            alert("Please fill in all fields")
+        }else if(pass.value!=passConf.value){
+            alert("Please make sure that the passwords are the same.")
+        }else if(pass.value.length<8){
+            alert("Please make the password at least 8 characters")
+        }else if(passwordInput==false){
+            alert("Please include both special characters and numbers")
+        }else if((PhoNo.value[0]!=0 || PhoNo.value[1]!=9) && PhoNo.length!=11){
+            alert("Please provide a proper Phone Number")
+        }else if(!(email.value.includes("@"))){
+            alert("Please provide a proper email address.")
+        }else if(!consent.checked){
+            alert("You cannot proceed unless you consent to us obtaining your personal data such as your Email Address and Phone Number")
+        }else{
+            document.getElementById('prompt').hidden=false
+            stopKey=loadingLoop()
+            return insertU()
+        }
+    }
+
+    async function insertU(){
+        const data={
+            uID:ID.value,
+            uEmail:email.value,
+            uName:fName.value+" "+lName.value,
+            uPass:pass.value,
+            uType:type.options[type.selectedIndex].value,
+            uClass:profClass.options[profClass.selectedIndex].value,
+            uGender:gender.options[gender.selectedIndex].value,
+            uPhoNo:PhoNo.value,
+            uExamStat:examStat,
+            uStat:verifStat,
+            uExamSched:dateCreate.value,
+            uDateCreated:dateCreate.value
+        }
+        const response=await fetch('/insertUser',{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+    })
+    const result=await response.json()
+    if(response.ok){
+        await sendVerify()
+        alert("Account Registered. Please verify your account.")
+        let log=data.uName+" has created an account"
+        let type="Registration"
+        insertL(log,type)
+    }else{
+        alert(result.error)
+        stop(stopKey)
+    }
+    }
+
+    async function sendVerify(){
+        const datum={
+            uID:ID.value,
+            uName:fName.value+" "+lName.value,
+            uEmail:email.value
+        }
+        try{
+            const response=await fetch('/verifyNotif',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                console.log(result)
+            }
+        }catch(err){
+            console.log(error)
+        }
+    }
+    async function insertL(logCont,logType){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*9)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType,
+            logUser:"USER"
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.replace('login')
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+</script>
+</html>
