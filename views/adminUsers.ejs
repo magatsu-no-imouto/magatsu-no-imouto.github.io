@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        input,select{
+            display: inline-block;
+            margin-left: 0%;   
+            height: fit-content;
+            width: fit-content;
+            font-size: 28px;
+        }
+        label{
+    display:block;
+}
+        div{
+            max-height: 50%;
+            overflow-y: auto;
+            width: fit-content;
+            padding: 5px;
+        }
+        input,select{
+            display: inline-block;
+            margin-left: 25px;   
+        }
+        .new{
+            border: 2px solid black;
+        }
+        .moduleSel{
+            margin-left:0%;
+            display:inline;
+        }
+        .tableInput{
+            appearance: none;
+            border: none;
+        }
+        .fade-element {
+            max-height: 140px;
+            margin-top: 0%;
+            margin-left: 0%;
+            margin-right: 0%;
+            padding: 5px;
+            width: fit-content;
+            border: blue 2px solid;
+            background-color: white;
+    opacity: 0; 
+    transition: opacity 1s ease-in-out; /
+}
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-out{
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.inputContainer {
+    
+    display: flex;
+}
+.inputContainer input {
+    flex: 1;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+table{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-top:0px;
+    border-bottom: solid black 5px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.datum-header{
+    border: 0px;
+    border-bottom: solid black 5px;
+}
+td{
+    border:solid black 1px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+button{
+    display: block;
+}
+
+.moduleButt{
+    display: inline;
+}
+@media screen and (max-width: 990px) {
+    input,select{
+            display: inline-block;
+            margin-left: 0%;   
+            height: fit-content;
+            width: fit-content;
+            font-size: 16px;
+        }
+}
+.FormContainer{
+    margin-bottom: 0px;
+    max-width: 100vh;
+    max-height: 50vh;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.stick{
+            position:sticky;
+            top:0;
+            background-color:#0099FF;
+            z-index: 2;
+            height: 50px;
+            border-bottom: black solid 5px;
+        }
+        .stick::before{
+            content:"";
+            position: absolute;
+            background-color: rgba(219, 177, 50);
+            height: 25px;
+            width:102.3%;
+            top:-25px;
+            left:-1px;
+            z-index: -1;
+        }
+        
+
+select:disabled{
+    color:rgb(0, 0, 0);
+    font-weight: 750;
+}
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Admin Users</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Admin Users</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/login">Log Out</a>
+        <a href="/admin/">Return Home</a>
+        <a href="/admin/exam">Edit The Exam</a>
+        <a href="/admin/applicants">Manage Applicants</a>
+        </div>
+        
+    </header>
+    <div class="FormContainer">
+        <table>
+            <thead>
+                <th class="stick"></th>
+                <th class="stick">Username</th>
+                <th class="stick">Full Name<br><span style="font-size: 9px;">First name - Last Name</span></th>
+                <th class="stick">Rank</th>
+                <th class="stick">Email</th>
+                <th class="stick" id="pass">Password</th>
+                <th class="stick">Phone Number</th>
+            </thead>
+            <tbody id="datum">
+            </tbody>
+        </table>
+    </div>
+    <div class="FormContainer2">
+        <button id="shelfHandle" style="margin-bottom: 0px;" onclick="appear()">Add Record</button>
+    <div id="shelf" class="fade-element" hidden>
+        <form>
+            <label>Username</label>
+            <input class="new" name="new" id="naID">
+            <label>Rank</label>
+            <select class="new" name="new" id="naClass">
+                <option value=" "></option>
+                <option value="Admin">Admin</option>
+                <option value="Mod">Mod</option>
+            </select>
+            <label>Email</label>
+            <input class="new" name="new" id="naEmail">
+            <label>Password</label>
+            <input class="new" name="new" id="naPass">
+            <label>First Name</label>
+            <input name="new" class="new" id="naNamef">
+            <label>Last Name</label>
+            <input name="new" class="new" id="naNamel">
+            <label>Phone Number</label>
+            <input name="new" class="new" id="naPhoNo" type="number" oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11);">
+        </form>
+        <button type="button" onclick="validator()">Submit</button>
+    </div>
+    <select id="uIDSel" class="moduleSel">
+        <option>uID1</option>
+        <option>uID2</option>
+    </select>
+    <button class="moduleButt" onclick="deleteU()">Delete Record</button><br>
+    <p id="prompt" class="loadPrompt" hidden>LOADING. . .</p>
+    </div>
+    
+    <input type="date" class="new" id="nuDateCreated" style="visibility: hidden;" disabled>
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+    promptE.style.display="block;"
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+
+    let stopkey;
+    let idArr=[]
+    fetch('/admin-data').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error('Error Fetching Data. Check the Terminal')
+        }
+    }).then(data=>{
+        let x=1;
+        var table=document.getElementById('datum')
+        var userList=document.getElementById('uIDSel')
+            userList.innerHTML=``
+        data.forEach(item=>{
+            idArr.push(item.aID)
+            let name=item.aName.split(" ")
+            const r=document.createElement(`tr`)
+            r.innerHTML=`
+            <td><button id="edit${x}" onclick="edit('edit${x}')">Edit</td>
+            <td><input name="edit${x}" id="aID" class="tableInput" value="${item.aID}" readonly></td>
+            <td class="inputContainer">
+                <input name="edit${x}" value="${name[0]}" id="aNameF" class="tableInput"  readonly><input name="edit${x}" id="uNameL" value="${name[1]}" class="tableInput" readonly>
+            </td>
+            <td><select name="edit${x}" id="aClass" class="tableInput">
+                <option value=""></option>
+                <option value="Admin">Admin</option>
+                <option value="Mod">Mod</option>    
+            </select></td>
+            <td><input name="edit${x}" id="aEmail" value="${item.aEmail}"></td>
+            <td id="pass"><input id="aPass" name="edit${x}" style="border:none;" type="password" value="${item.aPass}" readonly></td>
+            <td><input name="edit${x}" class="tableInput" value=${item.aPhoNo}  type="number" oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11);" readonly></td>
+            `
+            table.appendChild(r)
+            var q=document.querySelectorAll(`select[ name='edit${x}']`)
+            q[0].value=item.aClass
+            q[0].disabled=true
+            fetchResize()
+            x=parseInt(x)+1
+            const option=document.createElement('option')
+            option.value=item.aID
+            option.textContent=item.aName
+            userList.appendChild(option)
+            userList.addEventListener('change',resizeSel)
+        resizeSel.call(userList)
+        
+        })
+        
+    })
+
+    function fetchResize(){
+        const uNameInputs = document.querySelectorAll(`[name^="edit"]`);
+     uNameInputs.forEach(input => {
+        input.addEventListener('input', resize);
+        resize.call(input); 
+    });
+        
+    const selecto=document.querySelectorAll('select')
+    selecto.forEach(select=>{
+        select.addEventListener('change',resizeSel)
+        resizeSel.call(select)
+    })
+
+    } 
+
+    function resize() {
+        if(this.value.length<10 || this.id=="uPhoNo"||this.id=="uDate"){
+            this.style.width = (this.value.length+1) + "ch";
+        }else if(this.id=="uID" && this.value.length<=11){
+            this.style.width=(this.value.length+1)+"ch";
+        }else{
+                this.style.width =(this.value.length)+"ch";
+            }
+    }
+    function resizeSel() {
+        this.style.width = (this.value.length+3) + "ch"; 
+        if(this.classList=="moduleSel"){
+            if(this.options.length>1){
+                if(this.options[this.selectedIndex].textContent.length<10){
+                    this.style.width = (this.options[this.selectedIndex].textContent.length + 4) + "ch";
+                }else{
+                    this.style.width = (this.options[this.selectedIndex].textContent.length + 3) + "ch";
+                }
+
+            }else{
+                this.style.width = (this.textContent.length + 3) + "ch";   
+            }
+        }
+    }
+
+    let moved=0;
+    let prevMov;
+    function edit(lane){
+        moved=parseInt(moved)+1;
+        if(moved>1 && prevMov){
+            shift(prevMov)
+        }
+    const stuff = document.querySelectorAll(`[name="${lane}"]`); 
+    stuff.forEach(item => {
+        item.style="border: solid 1px black; appearance: auto;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        if(item.type=="password"){
+            item.type="input"
+        }
+        item.readOnly = false; 
+        item.disabled = false; 
+    });
+    document.getElementById(lane).innerHTML="Update"
+    document.getElementById(lane).onclick=function(){
+        update(lane)
+    }
+    prevMov=lane
+}
+
+function shift(lane){
+    const stuff = document.querySelectorAll(`[name="${lane}"]`);
+    stuff.forEach(item => {
+        item.style="border: none; appearance: none;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        item.readOnly = true; 
+        item.disabled = true; 
+        if(item.id=="aPass"){
+            item.type="password"
+        }
+    });
+    document.getElementById(lane).innerHTML="Edit"
+    document.getElementById(lane).onclick=function(){
+        edit(lane)
+    }
+ 
+}
+
+function update(lane){
+    document.getElementById('prompt').hidden=false 
+    document.getElementById('prompt').style="visibility:auto;"
+    const stuff = document.querySelectorAll(`[name="${lane}"]`);
+    let itemList=[] 
+    stuff.forEach(item => {
+        itemList.push(item.value)
+        item.style="border: none; appearance: none;"
+        if(item.outerHTML.includes('input')){
+            resize.call(item)
+        }else{
+            resizeSel.call(item)
+        }
+        if(item.id=="aPass"){
+            item.type="password"
+        }
+        item.readOnly = true; 
+        item.disabled = true; 
+    });
+    const update={
+        aID:idArr[parseInt(lane[4])-1],
+        aIDnu:itemList[0],
+        aName:itemList[1].split(" ")+" "+itemList[2].split(" "),
+        aClass:itemList[3],
+        aEmail:itemList[4],
+        aPass:itemList[5],
+        aPhoNo:itemList[6]
+    }
+        updateA(update)
+    document.getElementById(lane).innerHTML="Edit"
+    document.getElementById(lane).onclick=function(){
+        edit(lane)
+    }
+}
+
+var hide=false;
+function appear(){
+    document.getElementById('shelf').hidden=false;
+    document.getElementById('shelf').classList.add('fade-in')
+    document.getElementById('shelf').classList.remove('fade-out')
+    document.getElementById('shelfHandle').textContent="Cancel"
+    hide=true
+    document.getElementById('shelfHandle').onclick=function(){
+        disappear()
+    }
+}
+function disappear(){
+    document.getElementById('shelf').classList.add('fade-out')
+    document.getElementById('shelf').classList.remove('fade-in')
+    document.getElementById('shelf').addEventListener('animationend',function(){
+        if(hide){
+            hide=false
+        document.getElementById('shelf').hidden=true
+        }
+    },{ once: true });
+    document.getElementById('shelfHandle').textContent="Add Record"
+    document.getElementById('shelfHandle').onclick=function(){
+        appear()
+    }
+}
+
+const newID=document.getElementById('naID')
+const newEmail=document.getElementById('naEmail')
+const newPass=document.getElementById('naPass')
+const newNameF=document.getElementById('naNamef')
+const newNameL=document.getElementById('naNamel')
+const newPhoNo=document.getElementById('naPhoNo')
+const newClass=document.getElementById('naClass')
+function validator(){
+    stopkey=loadingLoop()
+    if(newID.value!="" && newPass.value!="" && newNameF.value!="" && newNameL.value!="" &&  newPhoNo.value!="" && newPhoNo.value.length==11 && newPhoNo.value[0]==0 && newClass.options[newClass.selectedIndex].value!=" "){
+        const data={
+            aID:newID.value,
+            aEmail:newEmail.value,
+            aName:newNameF.value+" "+newNameL.value,
+            aPass:newPass.value,
+            aPhoNo:newPhoNo.value,
+            aClass:newClass.options[newClass.selectedIndex].value
+        } 
+        return insertA(data)
+    }else{
+        alert("please fill in all the necessary fields correctly")
+        stop(stopkey)
+    }
+}
+
+//#region server side
+
+async function insertA(data){
+    const response=await fetch('/insertAdmin',{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+    })
+    try{
+        const result=await response.json()
+    if(response.ok){
+        let log="has created a new account for "+data.aName
+        let type="Inserting"
+        insertL(log,type)
+    }
+    }catch(err){
+        alert(err)
+        stop(stopkey)
+    }
+    
+}
+
+async function updateA(datum){
+    const base=await searchU(datum.aID)
+    if(base=="no"){
+console.log("nope. Update Cancelled")
+    }
+    let send={
+        aID:datum.aID
+    }
+    Object.keys(datum).forEach(item=>{
+        if(datum[item]!=base[item]){
+            send[item]=datum[item]
+        }
+    })
+    if(Object.keys(send).length==1){
+        console.log("Update Cancelled")
+    }else{
+        
+    }
+}
+
+async function searchU(ID){
+    const response=await fetch(`/searchAdmin?aID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        const dataF={
+            aID:result[0].aID,
+            aName:result[0].aName,
+            aEmail:result[0].aEmail,
+            aPass:result[0].aPass,
+            aPhoNo:result[0].aPhoNo,
+            aClass:result[0].aClass
+        }
+        stopkey=loadingLoop()
+        return dataF
+    }else{
+        return "no"
+    }
+}
+
+async function deleteU(){
+    stopkey=loadingLoop()
+    const source=document.getElementById('uIDSel')
+    let x=source.options[source.selectedIndex].value
+    let y=source.options[source.selectedIndex].textContent
+    const data={
+        aID:x
+    }
+    try{
+        const response=await fetch('/deleteAdmin',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+    })
+    if(response.ok){
+        var log="has deleted admin "+y+"'s profile"
+        var type="Deleting"
+        insertL(log,type)
+    }
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//#endregion
+
+async function insertL(logCont,logType){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*9)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType
+        }
+        console.log(datum)
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.reload()
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    
+    fetch('/searchCurrentAdmin').then(response=>{
+    if(response.ok){
+        return response.json()
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then(data=>{
+    data.forEach(item=>{
+        if(item.aClass!="Admin"){
+            location.replace('/admin')
+        }
+    })
+})
+</script>
+</html>

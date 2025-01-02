@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<body>
+    <img src="D:\School Stuff\PICTO EXAM APPLICATION - SQL ALT\public\media\pgcLogo.png" style="margin-top: 10px; width: 130px;">
+<input id="code" disabled>
+<button onclick="pull()"></button>
+</body>
+<script>
+    const dt=new Date()
+    function pull(){
+        dt.setDate(dt.getDate()+3)
+        document.getElementById('code').value=dt
+    }
+    
+</script>
+</html>

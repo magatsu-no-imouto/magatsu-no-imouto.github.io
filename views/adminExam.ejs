@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        input{
+            height: fit-content;
+            width: fit-content;
+            font-size: 28px;
+        }
+label{
+    display:block;
+}
+
+label[id^="wimage"]{
+background-color: rgb(72, 155, 255)
+}
+label[id^="wimage"]:hover{
+background-color: rgb(255, 68, 68);
+cursor: pointer;
+}
+
+button[id="rem"]:hover{
+    background-color: rgb(255, 68, 68);
+    
+}
+
+form{
+    justify-content: center;
+    align-items: center;
+    
+}
+.container{
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-top: 5px;
+    width: 100%;
+}
+.buttCont{
+    margin-top: 0;
+    text-align: center;
+    border:none;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    background-color: transparent;
+}
+button{
+    font-size: 15px;
+}
+div,form{
+    width: 100%;
+}
+@media screen and (max-width: 990px) {
+    div,form{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.container{
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-top: 5px;
+    margin-top: 5px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+}
+
+.FormContainer{
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.807);
+}
+    </style>
+    
+</head>
+<link rel="stylesheet" href="/style.css">
+<title>Exam Questions</title>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Exam Questions</label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/login">Log Out</a>
+    <a href="/admin/">Return Home</a>
+    <a name="noMods" href="/admin/users">Manage Users</a>
+    <a name="noMods" href="/admin/applicants">Manage Applicants</a>
+        </div>
+    
+    </header>
+<div class="FormContainer">
+        <label id="aName">[INSERT NAME HERE]</label>
+        <label id="examDate">[INSERT DATE HERE]</label>
+        <form id="formation">
+        <div class="container" id="containerQ">
+            <fieldset id="q01Field" class="question"><label style="color: transparent; user-select: none;">test</label><label
+                    id="qL1">Question 01:</label><input id="q1Q" name="q[]"><label>Answers:</label>
+                    <label
+                    style="display: inline;">Choice 1</label>
+                    <input type="text" id="ansA1" name="ans[]">
+                    <label
+                    style="margin-left: 0%; margin-top: 0%; margin-bottom: 0%; border: none; text-align: center; height: 17px;">
+                    <div
+                        style="margin-left: 0%; padding: 5px; margin-top: 1px; margin-bottom: 0%; border: 1px solid black; text-align: center; width: fit-content; background-color: rgb(72, 155, 255); height: 17px;">
+                        <label for="ansA01-Img" style="display: inline;">Add Image</label>
+                    </div>
+                    <p hidden="" id="ansA01-ImgL" style="display: inline;"></p>
+                </label><br><img src="/media/ansA01-Img.png" id="img-A01" hidden="" style="width: 100px; height: 100px;"><input
+                    type="file" id="ansA01-Img" accept="png"
+                    style="visibility: hidden; user-select: none; color: transparent;"><br><label style="display: inline;">Choice
+                    2</label><input type="text" id="ansB01" name="ans[]"><label
+                    style="margin-left: 0%; margin-top: 0%; margin-bottom: 0%; border: none; text-align: center; height: 17px;">
+                    <div
+                        style="margin-left: 0%; padding: 5px; margin-top: 1px; margin-bottom: 0%; border: 1px solid black; text-align: center; width: fit-content; background-color: rgb(72, 155, 255); height: 17px;">
+                        <label id="" for="ansB01-Img" style="display: inline;">Add Image</label>
+                    </div>
+                    <p hidden="" id="ansB01-ImgL" style="display: inline;"></p>
+                </label><br><img src="/media/ansB01-Img.png" id="img-B01" hidden="" style="width: 100px; height: 100px;"><input
+                    type="file" id="ansB01-Img" accept="png"
+                    style="visibility: hidden; user-select: none; color: transparent;"><br><label style="display: inline;">Choice
+                    3</label><input type="text" id="ansC01" name="ans[]"><label
+                    style="margin-left: 0%; margin-top: 0%; margin-bottom: 0%; border: none; text-align: center; height: 17px;">
+                    <div
+                        style="margin-left: 0%; padding: 5px; margin-top: 1px; margin-bottom: 0%; border: 1px solid black; text-align: center; width: fit-content; background-color: rgb(72, 155, 255); height: 17px;">
+                        <label for="ansC01-Img" style="display: inline;">Add Image</label>
+                    </div>
+                    <p hidden="" id="ansC01-ImgL" style="display: inline;"></p>
+                </label><br><img src="/media/ansC01-Img.png" id="img-C01" hidden="" style="width: 100px; height: 100px;"><input
+                    type="file" id="ansC01-Img" accept="png"
+                    style="visibility: hidden; user-select: none; color: transparent;"><br><label style="display: inline;">Choice
+                    4</label><input type="text" id="ansD01" name="ans[]"><label
+                    style="margin-left: 0%; margin-top: 0%; margin-bottom: 0%; border: none; text-align: center; height: 17px;">
+                    <div
+                        style="margin-left: 0%; padding: 5px; margin-top: 1px; margin-bottom: 0%; border: 1px solid black; text-align: center; width: fit-content; background-color: rgb(72, 155, 255); height: 17px;">
+                        <label for="ansD01-Img" style="display: inline;">Add Image</label>
+                    </div>
+                    <p hidden="" id="ansD01-ImgL" style="display: inline;"></p>
+                </label>
+                <br>
+                <img src="/media/ansD01-Img.png" id="img-D01" hidden="" style="width: 100px; height: 100px;">
+                <input type="file" id="ansD01-Img" accept="png" style="visibility: hidden; user-select: none; color: transparent;">
+                    <br>
+                    <label>Correct Answer</label>
+                    <input name="correctAns[]">
+                    <br>
+                    <button type="button">Remove Question</button>
+                </fieldset>
+        </div>
+        <div class="buttCont">
+            <button type="button" onclick="addQ(examid,nAnsInpVal,nQinpVal,nQcorrAns)">Add Question</button>
+            <button type="button" onclick="saveAll()">Submit Changes</button>
+            <p id="prompt" class="loadPrompt" hidden>LOADING. . .</p>
+        </div>
+        <label style="user-select: none; color:transparent" id="qIDsToRemove"></label>
+    </form>
+</div>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+    promptE.style.display="block;"
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+    let stopkey;
+
+    let dt=new Date()
+    let ans=[]
+    function putinDate(){
+        document.getElementById('examDate').textContent=dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear()
+    }
+    putinDate()
+
+    fetch('/exam-data').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{throw new Error('Error fetching data')
+    }
+    }).then(data=>{
+        clearQ()
+        if(data==""){
+            addQ(examid,nAnsInpVal,nQinpVal,nQcorrAns,scoreVal)
+        }else{
+        data.forEach(item=>{
+            addQ(item.examID,JSON.parse(item.examQ).choices,JSON.parse(item.examQ).question,item.examAns,item.examVal,item.examClass)
+        })
+        }
+    })
+
+    fetch('/searchCurrentAdmin').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error("Error Fetching Data")
+        }
+    }).then(data=>{
+        document.getElementById('aName').textContent=data.aName
+    })
+    
+    let examid="test"
+    let nAnsInpVal=["A","B","C","D"];
+    let choiceLett=nAnsInpVal
+    let qInRem=[]
+    let qImgRem=[]
+    let qInChange=[]
+    let nQinpVal="test"
+    let nQcorrAns="A"
+    let scoreVal=1
+    let examClass="General"
+    function addQ(examid,nAnsInpVal,nQinpVal,nQcorrAns,scoreVal,examClass){
+        //#region question counter
+        var qNo=document.querySelectorAll('.question').length+1;
+        if(qNo<10){
+            qNo="0"+String(qNo)
+        }
+        //#endregion
+        //#region fieldset declaration
+        var nQFieldSet=document.createElement('fieldset');
+        nQFieldSet.id="q"+qNo+"Field"
+        nQFieldSet.className="question"
+        //#endregion
+        //#region question ID
+        var examIDhold=document.createElement('label')
+        examIDhold.textContent=examid
+        examIDhold.style.color="transparent";
+        examIDhold.style.userSelect="none"
+        if(examid!="test"){
+            examIDhold.id="qID"+qNo
+        }
+        nQFieldSet.appendChild(examIDhold)
+        //#endregion
+        //#region question no.    
+        var qLabel=document.createElement("label")
+        qLabel.textContent="Question "+qNo+":"
+        qLabel.id="qL"+qNo+"Q"
+        nQFieldSet.appendChild(qLabel)
+        //#endregion
+        //#region question proper
+        var qInput=document.createElement('input')
+        qInput.id="q"+qNo+"Q"
+        qInput.name="q[]"
+        qInput.value=nQinpVal;
+        nQFieldSet.appendChild(qInput)
+        //#endregion
+        //#region question image
+        var imgButton=document.createElement('input')
+            imgButton.type="file"
+            imgButton.id=qInput.id+"-Img"
+            imgButton.accept="png"
+            var Ansimage=document.createElement('img')
+            Ansimage.style="width:100px; height:100px;"
+            Ansimage.src="/media/"+imgButton.id+".png"
+            var imgButtonLL=document.createElement('p')
+            var buttonCont=document.createElement('label')
+            buttonCont.style="margin-left:0%;margin-top:0%;margin-bottom:0%; border:none; text-align:center; height: 17px;"
+                var imgButtonL=document.createElement('label')
+                imgButtonLL.style="display:inline;"
+                imgButtonLL.hidden=true
+                imgButtonLL.id=imgButton.id+"L"
+                imgButtonLL.textContent=""
+                imgButtonL.innerText="Change Image"
+                imgButtonL.htmlFor=imgButton.id
+                imgButtonL.id="wimage"+imgButton.id
+                imgButtonL.style="display: inline;"
+                Ansimage.addEventListener('click',function(){
+                    iDeleteMark(this)
+                })
+                imgButton.innerText="Choose Another"
+                var buttonCase=document.createElement('div')
+                buttonCase.style.border="1px solid black;"
+                imgButtonL.style="margin-left:0%; padding:6px; margin-top:1px;margin-bottom:0%; border:1px solid black; text-align:center; text-position:middle;width:fit-content; height:fit-content; height: 17px; border-radius:5px;"
+            Ansimage.id="img-Q"+qNo
+            imgButton.style.visibility="hidden"
+                imgButton.style.userSelect="none"
+                nQFieldSet.appendChild(buttonCont)
+                var contain=document.createElement('div')
+                buttonCont.appendChild(imgButtonL)
+                buttonCont.appendChild(imgButtonLL)
+                buttonCont.appendChild(imgButton)
+                nQFieldSet.appendChild(document.createElement('br'))
+                nQFieldSet.appendChild(Ansimage)
+                imgButtonL.innerText="Add Image"
+                imgButton.style.userSelect="none"
+                imgButton.style.color="transparent"
+                nQFieldSet.appendChild(imgButton)
+            //#endregion
+            //#region question class type
+                var qClassL=document.createElement('label')
+                qClassL.textContent="Exam Class"
+                var qClassSel=document.createElement('select')
+                var op=document.createElement('option')
+                var op1=document.createElement('option')
+                var op2=document.createElement('option')
+                var op3=document.createElement('option')
+                op.value="General"
+                op.textContent="General"
+                op1.value="Admin"
+                op2.value="Programming"
+                op3.value="Technical"
+                op1.textContent="Admin"
+                op2.textContent="Programming"
+                op3.textContent="Technical"
+                nQFieldSet.appendChild(qClassL)
+                nQFieldSet.appendChild(qClassSel)
+                qClassSel.appendChild(op)
+                qClassSel.appendChild(op1)
+                qClassSel.appendChild(op2)
+                qClassSel.appendChild(op3)
+                qClassSel.style="display:inline-block;"
+                qClassSel.value=examClass
+            //#endregion
+        //#region question score value
+            nQFieldSet.appendChild(document.createElement('br'))
+                var qScoreVal=document.createElement('input')
+                var qScoreValL=document.createElement('span')
+                qScoreValL.textContent="Score Value: "
+                qScoreVal.type='number'
+                qScoreVal.id='q'+qNo+'Points'
+                qScoreVal.style="width:5ch;"
+                qScoreVal.value=scoreVal
+                qScoreVal.addEventListener('change',function(){
+                    if(this.value<0){
+                        this.value=0
+                    }else if(this.value>10){
+                        this.value=10
+                    }
+                })
+                nQFieldSet.appendChild(qScoreValL)
+                nQFieldSet.appendChild(qScoreVal)
+        //#endregion
+        //#region question type        
+        var nAnsTypeL=document.createElement('label')
+                var nAnsType=document.createElement('select')
+                var op1=document.createElement('option')
+                var op2=document.createElement('option')
+                op1.value="Multi"
+                op1.textContent="Multiple Choice"
+                op2.value="Single"
+                op2.textContent="Written Answer"
+                nAnsType.id="qType"
+                nAnsTypeL.textContent="Answer Type:"
+                nQFieldSet.appendChild(nAnsTypeL)
+                nQFieldSet.appendChild(nAnsType)
+                nAnsType.appendChild(op1)
+                nAnsType.appendChild(op2)
+                nAnsType.style="display:inline-block;"
+        qInRem.push(Ansimage.src.slice(22))
+        qImgRem.push(Ansimage.id)
+        qInChange.push(imgButtonL.id)
+        //#endregion
+        var nAnsInp=[];
+        if(nAnsInpVal.length==0){
+            //#region single answer
+            nAnsType.selectedIndex=1
+            //#endregion
+        }else{
+            //#region multiple choice
+            var nAnsLabelF=document.createElement("label")
+        nAnsLabelF.id="ansL"+qNo+"F"
+        nAnsLabelF.textContent="Answers:"
+        nQFieldSet.appendChild(nAnsLabelF)
+            for(i=1;i<=4;i++){
+            //#region choice label
+            var ansLabel=document.createElement('label')
+            ansLabel.id="ans0"+i+"L"+qNo
+            ansLabel.textContent="Choice "+i;
+            ansLabel.style="display:inline;"
+            nAnsInp.push(ansLabel)
+            //#endregion
+            //#region choice text
+            var ansInput=document.createElement('input')
+            ansInput.type="text"
+            ansInput.id="ans"+choiceLett[i-1]+qNo;
+            ansInput.name="ans[]"
+            ansInput.value=nAnsInpVal[i-1]
+            nAnsInp.push(ansInput)
+            //#endregion
+            //#region choice image
+            var imgButton=document.createElement('input')
+            imgButton.type="file"
+            imgButton.id=ansInput.id+"-Img"
+            imgButton.accept="png"
+            var Ansimage=document.createElement('img')
+            Ansimage.style="width:100px; height:100px;"
+            Ansimage.src="/media/"+imgButton.id+".png"
+            var imgButtonLL=document.createElement('p')
+            var buttonCont=document.createElement('label')
+            buttonCont.id="L"+qNo
+            buttonCont.style="margin-left:0%;margin-top:0%;margin-bottom:0%; border:none; text-align:center; height: 17px;"
+                var imgButtonL=document.createElement('label')
+                imgButtonLL.style="display:inline;"
+                imgButtonLL.hidden=true
+                imgButtonLL.id=imgButton.id+"L"
+                imgButtonLL.textContent=""
+                imgButtonL.innerText="Change Image"
+                imgButtonL.htmlFor=imgButton.id
+                imgButtonL.id="wimage"+imgButton.id
+                imgButtonL.style="display: inline;"
+                Ansimage.addEventListener('click',function(){
+                    iDeleteMark(this)
+                })
+                imgButton.innerText="Choose Another"
+                var buttonCase=document.createElement('div')
+                buttonCase.style.border="1px solid black;"
+                imgButtonL.style="margin-left:0%; padding:6px; margin-top:1px;margin-bottom:0%; border:1px solid black; text-align:center; text-position:middle;width:fit-content; height:fit-content; height: 17px; border-radius:5px;"
+            Ansimage.id="img-"+choiceLett[i-1]+qNo
+            imgButton.style.visibility="hidden"
+                imgButton.style.userSelect="none"
+                nAnsInp.push(buttonCont)
+                var contain=document.createElement('div')
+                buttonCont.appendChild(imgButtonL)
+                buttonCont.appendChild(imgButtonLL)
+                buttonCont.appendChild(imgButton)
+                var br1=document.createElement('br')
+                br1.id=qNo+"-br"
+                nAnsInp.push(br1)
+                nAnsInp.push(Ansimage)
+                imgButtonL.innerText="Add Image"
+                imgButton.style.userSelect="none"
+                imgButton.style.color="transparent"
+                nAnsInp.push(imgButton)
+                var br2=document.createElement('br')
+                br2.id=qNo+"-br"
+                nAnsInp.push(br2)
+                qInRem.push(Ansimage.src.slice(22))
+                qImgRem.push(Ansimage.id)
+                qInChange.push(imgButtonL.id)
+                //#endregion
+                //#endregion
+        }
+        
+        }
+        nAnsInp.forEach(function(input){
+            nQFieldSet.append(input)
+        })            
+        var correctLabel=document.createElement('label')
+        correctLabel.id="qCAns"+qNo+"L"
+        correctLabel.textContent="Correct Answer"
+        nQFieldSet.append(correctLabel)
+        var correctAns=document.createElement('input')
+        correctAns.name="correctAns[]"
+        correctAns.value=nQcorrAns
+        nQFieldSet.append(correctAns)
+        var br3=document.createElement('br')
+        br3.id=qNo+"-br"
+        nQFieldSet.append(br3)
+        var removeButton=document.createElement('button')
+        removeButton.innerHTML="Remove Question"
+        removeButton.type="button"
+        removeButton.id="rem"
+        let id=nQFieldSet.id
+        removeButton.onclick = function(){
+            removeQ(id)
+        };
+        nQFieldSet.append(removeButton)
+        document.getElementById('containerQ').appendChild(nQFieldSet)
+        var imgButtons = document.querySelectorAll('input[type="file"]');
+
+        imgButtons.forEach(function(imgButton) {
+            imgButton.addEventListener('change', function() {
+                var imgButtonLL = this.parentNode.querySelector(`p[id='${this.id}L']`)
+                if (this.files.length > 0 && this.files[0].name.slice(-4)==".png") {
+                    if(imgButtonLL){
+                        imgButtonLL.textContent=this.files[0].name
+                        imgButtonLL.hidden=false
+                }
+                    var fileId = this.id
+            var fileInput = document.getElementById(fileId);
+            fileInput.title=this.files[0].name
+            fileInput.style.appearance="auto"
+            fileInput.style.visibility="auto"
+            fileInput.style.color="black"
+        }else{
+            var fileId = this.id
+            var fileInput = document.getElementById(fileId);
+            fileInput.title="Please Choose A Different File"
+        }
+        });
+        });
+        nAnsType.addEventListener('change',function(){
+            if(nAnsType.options[nAnsType.selectedIndex].value=="Multi"){
+                var nAnsLabelF=document.createElement("label")
+        nAnsLabelF.id="ansL"+qNo+"F"
+        nAnsLabelF.textContent="Answers:"
+        nQFieldSet.appendChild(nAnsLabelF)
+                let nAnsInp2=[]
+                for(i=1;i<=4;i++){
+            var ansLabel=document.createElement('label')
+            ansLabel.id="ans0"+i+"L"+qNo
+            ansLabel.textContent="Choice "+i;
+            ansLabel.style="display:inline;"
+            nAnsInp.push(ansLabel)
+            var ansInput=document.createElement('input')
+            ansInput.type="text"
+            ansInput.id="ans"+choiceLett[i-1]+qNo;
+            ansInput.name="ans[]"
+            ansInput.value=nAnsInpVal[i-1]
+            nAnsInp2.push(ansInput)
+            var imgButton=document.createElement('input')
+            imgButton.type="file"
+            imgButton.id=ansInput.id+"-Img"
+            imgButton.accept="png"
+            var Ansimage=document.createElement('img')
+            Ansimage.style="width:100px; height:100px;"
+            Ansimage.src="/media/"+imgButton.id+".png"
+            var imgButtonLL=document.createElement('p')
+            var buttonCont=document.createElement('label')
+            buttonCont.id="L"+qNo
+            buttonCont.style="margin-left:0%;margin-top:0%;margin-bottom:0%; border:none; text-align:center; height: 17px;"
+                var imgButtonL=document.createElement('label')
+                imgButtonLL.style="display:inline;"
+                imgButtonLL.hidden=true
+                imgButtonLL.id=imgButton.id+"L"
+                imgButtonLL.textContent=""
+                imgButtonL.innerText="Change Image"
+                imgButtonL.htmlFor=imgButton.id
+                imgButtonL.id="wimage"+imgButton.id
+                imgButtonL.style="display: inline;"
+                Ansimage.addEventListener('click',function(){
+                    iDeleteMark(this)
+                })
+                imgButton.innerText="Choose Another"
+                var buttonCase=document.createElement('div')
+                buttonCase.style.border="1px solid black;"
+                imgButtonL.style="margin-left:0%; padding:6px; margin-top:1px;margin-bottom:0%; border:1px solid black; text-align:center; text-position:middle;width:fit-content; height:fit-content; height: 17px; border-radius:5px;"
+            Ansimage.id="img-"+choiceLett[i-1]+qNo
+            imgButton.style.visibility="hidden"
+                imgButton.style.userSelect="none"
+                nAnsInp2.push(buttonCont)
+                var contain=document.createElement('div')
+                buttonCont.appendChild(imgButtonL)
+                buttonCont.appendChild(imgButtonLL)
+                buttonCont.appendChild(imgButton)
+                var br1=document.createElement('br')
+                br1.id=qNo+"-br"
+                nAnsInp2.push(br1)
+                nAnsInp2.push(Ansimage)
+                imgButtonL.innerText="Add Image"
+                imgButton.style.userSelect="none"
+                imgButton.style.color="transparent"
+                nAnsInp2.push(imgButton)
+                var br2=document.createElement('br')
+                br2.id=qNo+"-br"
+                nAnsInp2.push(br2)
+            qInRem.push(Ansimage.src.slice(22))
+                qImgRem.push(Ansimage.id)
+                qInChange.push(imgButtonL.id)
+                }
+                nAnsInp2.forEach(function(input){
+            nQFieldSet.append(input)
+            iRemArray.forEach((img)=>{
+                if(img.includes(qNo)){
+                    let target=iRemArray.indexOf(img)
+                    iRemArray.splice(target,1)
+                }
+            })
+        })  
+                    }else{
+                const inp=document.querySelectorAll(`input[id*="${qNo}"],img[id*="${qNo}"],label[id*="${qNo}-Img"],p[id*="${qNo}-Img"],label[id*="L${qNo}"],br[id*="${qNo}"]`)
+                inp.forEach((item)=>{
+                    if(item.id.includes('Q')){
+
+                    }else{
+                        item.parentNode.removeChild(item)
+                        if(item.tagName=="IMG"){
+                            iRemArray.push(item.src.slice(22))
+                        }
+                    }
+                })
+                    }
+                popIMG()
+                })
+        popIMG()
+    }
+
+
+    function iDeleteMark(element) {
+    var src = element.src.slice(22);
+    if (!iRemArray.includes(src)) {
+        element.style.border="5px solid red"
+        iRemArray.push(src);
+    } else {
+        element.style.border="none"
+        iRemArray = iRemArray.filter((item) => item !== src);
+    }
+}
+
+let qRemArray=[]
+    let qChangeArray=[]
+    let iRemArray=[]
+    function removeQ(id){
+        let idNo=id.slice(1,3)
+        let cutID=id.slice(2)
+            if(document.getElementById('qID'+idNo)){
+                qRemArray.push(document.getElementById('qID'+idNo).innerHTML)
+            }
+            nAnsInpVal.forEach((e)=>{
+                if(document.getElementById(`img-${e}${idNo}`)){
+                    let img=document.getElementById(`img-${e}${idNo}`)
+                    if(img.width>0){
+                        iRemArray.push(img.src.slice(22))
+                    }
+            }
+            })
+            console.log(iRemArray)
+        document.getElementById(id).parentNode.removeChild(document.getElementById(id))
+        let examIDnext="qID"+(parseInt(idNo)+1)
+        const line=document.querySelectorAll('.question');
+    line.forEach((fieldset)=>{
+        let x=fieldset.id
+        let idNo=id.slice(1,3)
+        let y=x.slice(1,3)
+        let digit1=""
+        if(parseInt(y)<10){
+            digit1="0"
+        }
+            
+        if(idNo<y){
+            if(document.getElementById(`qID${y}`)!=null){
+                qChangeArray.push(document.getElementById(`qID${y}`).innerHTML)
+                document.getElementById("qL"+y+"Q").innerHTML=`Question ${digit1}${parseInt(y)-qRemArray.length}`
+            }
+        }
+    })
+        for( o=0; o<qRemArray.length;o++){
+            for( w=0; w<qChangeArray.length;w++){
+                if(qRemArray[o]==qChangeArray[w]){
+                    qChangeArray.splice(w,1)
+                }
+            }
+        }
+    }
+
+    function clearQ(){
+        const questions = document.querySelectorAll('.question');
+        questions.forEach(fieldset=>{
+            fieldset.parentNode.removeChild(fieldset);
+        })   
+        }
+
+    async function saveAll(){
+        stopkey=loadingLoop()
+        await deleteI()
+        document.getElementById('prompt').hidden=false 
+        var fom=new FormData(document.getElementById('formation'))
+        let date1=dt.getMonth()+1+""+dt.getDate()+""+((dt.getFullYear())%100)
+        let month
+            if((parseInt(dt.getMonth())+1)>=10){
+                month=dt.getMonth()+1
+            }else{
+                month=String(dt.getMonth()+1).padStart(2,'0')
+            }
+            let day
+            if((parseInt(dt.getDate)+1)>=10){
+                day=dt.getDate()
+            }else{
+                day=String(dt.getDate()).padStart(2,'0')
+            }
+            let date2=dt.getFullYear()+"-"+month+"-"+day
+        const questions = document.querySelectorAll('.question');
+        const insertPromises = [];
+        let x=0
+        let mod=1
+        console.log(questions)
+        Object.keys(questions).forEach(item=>{
+            console.log(questions[item])
+        })
+        for(const fieldset of questions){
+            const q=fieldset.querySelector('input[name="q[]"]').value
+            const choices=[];
+            const choicesImg=[];
+            const a=fieldset.querySelector('input[name="correctAns[]"]').value
+            fieldset.querySelectorAll('input[name="ans[]"]').forEach((input)=>{
+                choices.push(input.value)
+            })
+            const val=fieldset.querySelector('input[type="number"]')
+            const eClass=fieldset.querySelector('select')
+            const eType=fieldset.querySelector('select[id="qType"]')
+            if(val.value=="" || eClass.value==""){
+                stop(stopkey)
+                return alert("Please fill in everything.")
+            }
+            console.log(eType.value)
+            fieldset.querySelectorAll('input[type="file"]').forEach((input)=>{
+                if(input.files[0]){
+                    choicesImg.push({choice:input.id,image:input.files[0]})
+                }
+            })
+            let number=parseInt(x)+mod
+            let digit1=""
+            if(number<10){
+                digit1="0";
+            }
+            let ID,examIDf
+            
+            if(digit1+number+" "+document.getElementById(`qID${digit1}${number}`)==null ||document.getElementById(`qID${fieldset.id.slice(1,3)}`)==undefined){
+                ID="Q"+digit1+number+"-"+rollNum()+rollNum()+rollNum()+rollNum()+"-"+date1;
+            }else{
+                examIDf=document.getElementById(`qID${fieldset.id.slice(1,3)}`).innerHTML
+                if(number==parseInt(fieldset.id.slice(1,3))){
+                    ID=document.getElementById(`qID${fieldset.id.slice(1,3)}`).innerHTML
+                }else{
+                    ID="Q"+digit1+number+"-"+rollNum()+rollNum()+rollNum()+rollNum()+"-"+date1;
+                }    
+            }
+
+            const examData={
+                examID:ID,
+                examQ:{"question":q,"choices":choices},
+                examAns:a,
+                examUserAdd:document.getElementById('aName').textContent,
+                examDateAdd:date2,
+                examVal:val.value,
+                examClass:eClass.value
+            }
+            if(examIDf!="" || examIDf!=undefined){
+                examData.examIDf=examIDf
+            }
+            let qImg=[]
+            fieldset.querySelectorAll(`img`).forEach((image)=>{
+                console.log(image.hidden)
+                    let x
+                let xImg=image.src.slice(21)
+                let nuImg
+                if(!image.hidden){
+                    if(image.src.includes('Q')){
+                    x=image.src.slice(29,31)
+                    }else{
+                        x=image.src.slice(32,34)
+                    }
+                    let imgHalf1=xImg.slice(0,11)
+                    if(xImg.includes('Q')){
+                    imgHalf1=xImg.slice(0,8)
+                    }
+                    let imgHalf2=xImg.slice(13)
+                    if(xImg.includes('Q')){
+                    imgHalf2=xImg.slice(10)
+                    }
+                    nuImg=imgHalf1+x+imgHalf2
+                    qImg.push(nuImg)
+                }else{
+                    qImg.push('[N/A]')
+                }
+                if((x>number || x<number) && image.width>0 ){
+                    qImg.push(nuImg)
+                    renameI(xImg,number)
+                }
+                if(eType.value=="Single"){
+                    qImg.push('[N/A]','[N/A]','[N/A]','[N/A]')
+                }
+            })
+            console.log(qImg)
+            x=parseInt(x)+1
+            if(choicesImg){
+                await uploadQChoiceI(choicesImg)
+            }
+            examData.examImg=qImg
+            await searchQ(examData);
+        }
+        alert("Changes Saved Successfully")
+        await deleteQ()
+        let log="has updated the questionnaire"
+        let type="Updating"
+        insertL(log,type)
+    }
+
+    let changeToken=0;
+    let removeToken=0;
+    async function searchQ(examData){
+        let fullID=examData.examID
+        let IDno=fullID.slice(1,3)
+        IDno=parseInt(IDno)
+        let digit1="";
+        
+        if (IDno<10){
+            digit1="0"
+        }
+        let changeToken=""
+        let lookup=`${digit1}${IDno}`
+        if(examData.examIDf != examData.examID){
+            lookup=examData.examIDf
+            changeToken="a"
+        }
+        try{
+            const response=await fetch(`/searchExam?examID=${lookup}`)
+            const result=await response.json()
+            if(response.ok){
+                let id=result[0].examID
+                if(changeToken!=""){
+                    examData.examID=examData.examIDf
+                    examData.examIDf=fullID.slice(0,3)+id.slice(3)
+                }
+                
+                console.log("Existing record found: updating.")
+                console.log("Change Token: "+changeToken)
+                let datum=[examData]
+                updateQ(datum)
+                
+            }else{
+                console.log("no record found. Inserting "+examData.examID)
+                    insertQ(examData)
+                
+            }
+        }catch(err){
+            console.error('E-E-ERROR! ', err);
+            alert('An Error Occured While searching The Record.', err);
+            stop(stopkey)
+        }   
+    }
+
+    async function insertQ(examData){
+        try{
+            const response = await fetch('/insertExam',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(examData),
+            });
+            const result=await response.json();
+            if (response.ok){
+                console.log("insert good")
+            }
+            
+        }catch(err){
+            console.error('E-E-ERROR! ',err);
+            alert('An Error Occured While Inserting The Record.');
+            stop(stopkey)
+        }
+    }
+    
+    async function updateQ(examData){
+        let post={}
+        if (examData[0].examIDf != examData[0].examID) {
+        post = {
+            examIDnu: examData[0].examIDf,
+            examID: examData[0].examID,
+            examQ: examData[0].examQ,
+            examAns: examData[0].examAns,
+            examDateAdd: examData[0].examDateAdd,
+            examUserAdd: examData[0].examUserAdd,
+            examVal:examData[0].examVal,
+            examClass:examData[0].examClass,
+            examImg:examData[0].examImg
+        };
+    } else{
+            post={
+            examID:examData[0].examID,
+            examQ:examData[0].examQ,
+            examAns:examData[0].examAns,
+            examDateAdd:examData[0].examDateAdd,
+            examUserAdd:examData[0].examUserAdd,
+            examVal:examData[0].examVal,
+            examClass:examData[0].examClass,
+            examImg:examData[0].examImg
+        }
+        }
+        try{
+            const response = await fetch('/updateExam',{
+            method:'PATCH',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(post),
+            });
+            const result=await response.json();
+            if (response.ok){
+                console.log("update good")
+            }
+            
+        }catch(err){
+            console.error('E-E-ERROR! ',err);
+            alert('An Error Occured While Inserting The Record.');
+            stop(stopkey)
+        }
+    }
+    async function deleteQ(){
+        if(qRemArray.length>0){
+            console.log("Running")
+        for(let i of qRemArray){
+            let ID=i
+            const examData={
+                examID:ID
+            }
+            try{
+            const response = await fetch('/deleteExam',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(examData),
+            });
+            const result=await response.json();
+            if (response.ok){
+                console.log("deleted good")
+            }
+            
+        }catch(err){
+            console.error('E-E-ERROR! ',err);
+            alert('An Error Occured While Inserting The Record.');
+            stop(stopkey)
+        }
+        }
+        }
+    }
+    
+    async function uploadQChoiceI(images){
+    for(let i of images){
+        const uploadI = new FormData();
+        uploadI.append('fieldname', i.choice); 
+        uploadI.append('image', i.image);
+        try {
+            const response = await fetch('/uploadI', {
+                method: 'POST',
+                body: uploadI
+            });
+            const result = await response.json();
+            if (response.ok){
+                console.log("good");
+            }
+        } catch(err) {
+            console.log(err);
+        }
+    }
+}
+
+    async function renameI(image,x){
+        let ImgNo=image.slice(11,13)
+        if(image.includes('Q')){
+            ImgNo=image.slice(8,10)
+        }
+        let nuImgNo=parseInt(ImgNo)-parseInt(x)
+        let digit1=""
+            if(x<10){
+                digit1="0";
+            }
+        let imgHalf1=image.slice(0,11)
+        if(image.includes('Q')){
+            imgHalf1=image.slice(0,8)
+        }
+        let imgHalf2=image.slice(13)
+        if(image.includes('Q')){
+            imgHalf2=image.slice(10)
+        }
+        let nuImg=imgHalf1+digit1+x+imgHalf2
+        console.log("New Image Name:"+nuImg)
+        const rename={
+            oldpath:image,
+            newpath:nuImg
+        }
+        try {
+            const response = await fetch('/renameI', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+            },
+                body: JSON.stringify(rename)
+            });
+            const result = await response.json();
+            if (response){
+                console.log(nuImg);
+            }
+        } catch(err) {
+            console.log(err);
+        }
+
+    }
+    
+    async function deleteI(){
+        if(iRemArray.length>0){
+            console.log("Running")
+        for(let i of iRemArray){
+            let ID=i
+            const examData={
+                path:ID
+            }
+            try{
+            const response = await fetch('/removeI',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(examData),
+            });
+            const result=await response.json();
+            if (response.ok){
+                console.log("deleted good")
+            }
+            
+        }catch(err){
+            console.error('E-E-ERROR! ',err);
+            alert('An Error Occured While Inserting The Record.');
+            stop(stopkey)
+        }
+        }
+        }
+    }
+
+    async function searchI(ID){
+    let path=ID
+    try{
+    const response=await fetch(`/searchI?path=${path}`)
+    const result=await response.json()
+    if(result.message=="Image found"){
+        return "OK"
+    }else{
+        return "No"
+    }
+}catch(err){
+    stop(stopkey)
+}
+}
+
+async function popIMG(){
+    let x=-1
+    let y=-1
+    let z=0
+    let m=document.querySelectorAll('label[id^="wimage"]')
+    for(e of qInRem){
+        x=parseInt(x)+1
+        y=parseInt(y)+1
+        let lookup=await searchI(e)
+        if(lookup!="OK"){
+            z=parseInt(z)+1
+            document.getElementById(qImgRem[x]).hidden=true
+        }else{
+            document.getElementById(qInChange[x]).innerHTML="Change Image"
+        }
+        if(z==5){
+            z=0
+        }
+        
+    }
+}
+
+function rollNum(){
+            var randNum=Math.floor(Math.random()*10)
+            return randNum
+        }
+
+async function insertL(logCont,logType){
+        
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.reload()
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    fetch('/searchCurrentAdmin').then(response=>{
+    if(response.ok){
+        return response.json()
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then(data=>{
+    data.forEach(item=>{
+        if(item.aClass!="Admin"){
+            let rem=document.querySelectorAll('[name=noMods]')
+            let hed=document.querySelector('[class=don]')
+            rem.forEach(item=>{
+                item.parentNode.removeChild(item)
+            })
+        }
+    })
+})
+</script>
+</html>

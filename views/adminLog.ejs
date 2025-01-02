@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        header a{
+            margin-right: -5px;
+            font-size: 5px;
+            white-space:nowrap;
+        }
+        table{
+            border-spacing: 0;
+            border-collapse: separate;
+            margin:0 auto;
+            
+        }
+        td,th{
+            border: solid 1px black;
+        }
+        .stick{
+            
+            position:sticky;
+            top:0;
+            background-color: white;
+            z-index: 2;
+            height: 50px;
+            border-bottom: black solid 5px;
+        }
+        .stick::before{
+            
+            content:"";
+            position: absolute;
+            background-color: rgba(219, 177, 50);
+            height: 25px;
+            width:102.3%;
+            top:-25px;
+            left:-1px;
+            z-index: 1;
+            border-bottom: black solid 1px;
+        }
+        .stick::after{
+            position: absolute;
+            background-color: white;
+            height: 10px;
+            border-bottom: black solid 5px;
+        }
+        @media screen and (max-width: 990px) {
+            .scroll{
+            width: fit-content;
+            border: 5px solid rgba(219, 177, 50, 0.2);
+            max-height:300px;
+            max-width: 725px;
+            overflow-y: auto;
+            overflow-x:auto;
+            text-align: center;
+            }
+            input,select{
+                width: fit-content;
+                height: fit-content;
+                font-size: large;
+            }
+            select{
+                padding-top: 2px;
+                padding-bottom: 5px;
+            }
+        }
+        .scroll2{
+            max-width: 725px;
+            overflow-x:auto;
+        }
+        .case2{
+            text-align: left;
+            width: fit-content;
+            margin-left: 5px;
+            margin-right:0%;
+            margin-bottom: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Audit Log</title>
+</head>
+
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Audit Log</label>
+    </header>
+    <header class="don" >
+        <div class="head">
+        <a href="/login">Log Out</a>
+        <a href="/admin/">Return Home</a>
+    </header>
+    <div class="case2">
+        <label>Filter By:</label>
+            <select id="selFilter" style="margin-right:5px;">
+            <option value="default"></option>
+            <option value="Date">Date</option>
+            <option value="LogType">Log Type</option>
+            <option value="UserType">User Type</option>
+        </select>
+        <button id="filterButt" onclick="resetL()">Search</button>
+        <button type="button" id="printButt" onclick="generate('PRINT')">PRINT</button>
+        <button type="button" id="exportButt" onclick="generate('EXPORT')">EXPORT</button>
+    </div>
+<div class="scroll">
+    <table>
+        <thead id="headDatum">
+            <th class="stick">LogID</th>
+            <th class="stick">Log Date</th>
+            <th class="stick">Log Content</th>
+            <th class="stick">User Type</th>
+            <th class="stick">Log Type</th>
+        </thead>
+        <tbody id="datum">
+            <% if(dat.length === 0){ %>
+                <tr>
+                    <td colspan="5" style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;">- -{[NO DATA FOUND]}- -</td>
+                </tr>
+            <% }else{ %>
+                <% dat.forEach(item => { %>
+                    <tr>
+                        <td><%= item.logID %></td>
+                        <td>
+                            <% let fDT = new Date(item.logDate) %>
+                            <% let fDate = new Date(fDT.getTime() + (8 * 60 * 60 * 1000)) %> 
+    
+                            <% let month = (fDate.getMonth() + 1).toString().padStart(2, '0') %> 
+                            <% let date = fDate.getDate().toString().padStart(2, '0') %>
+                            <% let day = fDate.getDay() %>
+                            <% let hour = fDate.getHours().toString().padStart(2, '0') %> 
+                            <% let min = fDate.getMinutes().toString().padStart(2, '0') %>
+                            <% let year = fDate.getFullYear() %>
+    
+                            <% let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] %>
+                            <% let dayF = dayNames[day] %>
+    
+                            <% let time = `${month}/${date}/${year} ${hour}:${min} ${dayF}` %>
+                            <%= time %>
+                        </td>
+                        <td><%= item.logMssg %></td>
+                        <td><%= item.logUser %></td>
+                        <td><%= item.logType %></td>
+                    </tr>
+                <% })%>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+<div class="case">
+    <label>Clear Logs From:</label>
+    <select id="clearSel">
+        <option value=""></option>
+        <option value="1">One Day Ago</option>
+        <option value="7">One Week Ago</option>
+        <option value="1">One Month Ago</option>
+        <option value="6">Six Months Ago</option>
+        <option value="1">One Year Ago</option>
+        <option value="ALL">All Time</option>
+    </select>
+    <button onclick="clearTime()">Clear All Log</button>
+</div>
+<footer class="twoBottom"></footer>
+
+<script>
+
+async function clearTime(){
+    const clear=document.getElementById('clearSel')
+    let clearAmt=clear.options[clear.selectedIndex].value
+    let clearCond=clear.options[clear.selectedIndex].textContent
+    let no="no"
+    let dt=new Date()
+    dt.setHours(0,0,0,0)
+    if(clearCond.includes('Day')||clearCond.includes('Week')){
+        dt.setDate(dt.getDate()-clearAmt)
+    }else if(clearCond.includes('Month')){
+        dt.setMonth(dt.getMonth()-clearAmt)
+    }else if(clearCond.includes('Year')){
+        dt.setFullYear(dt.getFullYear()-clearAmt)
+    }else if(clearCond==""){
+        return alert("Please select an option")
+    }else{
+        no="yes"
+        await clearEntireLog()
+    }
+    if(no=="yes"){}else{
+        dat.forEach(item=>{
+        let dtF=new Date(item.logDate)
+        let dtFind=new Date(dtF.getTime() + (8 * 60 * 60 * 1000))
+        dtFind.setHours(0,0,0,0)
+        if(dtFind<=dt){
+            clearL(item.logID)
+        }else{
+            console.log("False")
+        }
+    })
+    }
+    insertL(clearCond)
+}
+
+const tbl=document.getElementById('datum')
+let dat
+
+function resetL(){
+    fetch('/log-data').then(response=>{
+    if(response.ok){
+        return response.json()
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then(data=>{
+    dat=data
+})
+    tbl.innerHTML=`
+    <% if(dat.length === 0){ %>
+                <tr>
+                    <td colspan="5" style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;">- -{[NO DATA FOUND]}- -</td>
+                </tr>
+            <% }else{ %>
+                <% dat.forEach(item => { %>
+                    <tr>
+                        <td><%= item.logID %></td>
+                        <td>
+                            <% let fDT = new Date(item.logDate) %>
+                            <% let fDate = new Date(fDT.getTime() + (8 * 60 * 60 * 1000)) %> 
+    
+                            <% let month = (fDate.getMonth() + 1).toString().padStart(2, '0') %> 
+                            <% let date = fDate.getDate().toString().padStart(2, '0') %>
+                            <% let day = fDate.getDay() %>
+                            <% let hour = fDate.getHours().toString().padStart(2, '0') %> 
+                            <% let min = fDate.getMinutes().toString().padStart(2, '0') %>
+                            <% let year = fDate.getFullYear() %>
+    
+                            <% let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] %>
+                            <% let dayF = dayNames[day] %>
+    
+                            <% let time = month+"/"+date+"/"+year+" "+hour+":"+min+" "+dayF%>
+                            <%= time %>
+                        </td>
+                        <td><%= item.logMssg %></td>
+                        <td><%= item.logUser %></td>
+                        <td><%= item.logType %></td>
+                    </tr>
+                <% })%>
+            <% } %>
+    `
+}
+
+resetL()
+
+async function clearL(dare){
+    const send={
+        logID:dare
+    }
+    try{
+            const response=await fetch('/deleteLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(send)
+            })
+            const result=await response.json()
+            if(response.ok){
+             console.log("All Cleared")   
+            }
+        }catch(err){
+            console.log(err)
+        }
+}
+
+async function clearEntireLog(){
+    try{
+            const response=await fetch('/deleteLogAll',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            })
+            const result=await response.json()
+            if(response.ok){
+                
+            }
+        }catch(err){
+            console.log(err)
+        }
+}
+
+const filterA=document.getElementById('selFilter')
+
+filterA.addEventListener('change',function(){
+    resetL()
+    let choice=filterA.options[filterA.selectedIndex].value
+    const filterWhat=document.getElementById('filterButt')
+    let rem=document.querySelectorAll('[name=filterB]')
+    filterWhat.onclick=function(){
+        resetL()
+    }
+    if(rem){
+        rem.forEach(item=>{
+                filterA.parentNode.removeChild(item)
+            })
+    }
+    if(choice=="Date"){
+        filterWhat.onclick=function(){
+            dateFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`<select id="logDatef" name="filterB">
+            <option value="default"></option>
+            <option value="earliest">Earliest</option>
+            <option value="latest">Latest</option>
+            <option value="Monthly">Monthly</option>
+            <option value="preSpecDate">Before Specific Date</option>
+            <option value="durSpecDate">@ Specific Date</option>
+            <option value="postSpecDate">After Specific Date</option>
+            </select>`)
+        const filterB=document.getElementById('logDatef')
+        filterB.addEventListener('change',function(){
+        let re=document.querySelector('[id=logDatef-b]')
+        let choiceB=filterB.options[filterB.selectedIndex].value
+            if(choiceB.includes("SpecDate")){
+                if(re){
+                    if(re.outerHTML.includes('select')){
+                        filterA.parentNode.removeChild(re)
+                        filterB.insertAdjacentHTML('afterend','<input id="logDatef-b" name="filterB" type="date" style="margin-left:5px;">')
+                    }
+                }else{
+                filterB.insertAdjacentHTML('afterend','<input id="logDatef-b" name="filterB" type="date" style="margin-left:5px;">')
+            }
+        }else if(choiceB=="Monthly"){
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+            filterB.insertAdjacentHTML('afterend','<Select id="logDatef-b" name="filterB" style="margin-left:5px;"><option value="default"></option><option value="0">January</option><option value="1">Febuary</option><option value="2">March</option><option value="3">April</option><option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option><option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>')
+        }else{
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+        }            
+        })
+    }else if(choice=="LogType"){
+        filterWhat.onclick=function(){
+            typeFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="logTypef" name="filterB">
+            <option value="default"></option>
+            <option value="logIn">Logging In</option>
+            <option value="LogOut">Logging Out</option>
+            <option value="AuthRetake">Authorizing Retake</option>
+            <option value="notif">Notifying</option>
+            <option value="register">Registration</option>
+            <option value="insert">Inserting</option>
+            <option value="update">Updating</option>
+            <option value="delete">Deleting</option>
+            <option value="exam">Exam</option>
+            </select>`)
+    }else if(choice=="UserType"){
+        filterWhat.onclick=function(){
+            userFilter()
+        }
+        filterA.insertAdjacentHTML('afterEnd','<select id="logUTypef" name="filterB"><option value="default"></option><option value="USER">User</option><option value="ADMIN">Admin</option>')
+    }
+})
+
+function filterTool(ID,logDate,message,user,type){
+    let fdt=new Date(logDate)
+    let fDate = new Date(fdt.getTime() + (8 * 60 * 60 * 1000)) 
+    let month = (fDate.getMonth() + 1).toString().padStart(2, '0') 
+    let date = fDate.getDate().toString().padStart(2, '0') 
+    let day = fDate.getDay() 
+    let hour = fDate.getHours().toString().padStart(2, '0') 
+    let min = fDate.getMinutes().toString().padStart(2, '0') 
+    let year = fDate.getFullYear() 
+    let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] 
+    let dayF = dayNames[day] 
+    let time = month+'/'+date+'/'+year+' '+hour+":" 
+    let combine=`<td>${ID}</td>
+            <td>${time}</td>
+            <td>${message}</td>
+            <td>${user}</td>
+            <td>${type}</td>`
+    return combine
+}
+
+function dateFilter(){
+    tbl.innerHTML=''
+    const filterB=document.getElementById('logDatef')
+    const picked=filterB.options[filterB.selectedIndex].value
+    let idt
+    if(picked.includes("SpecDate")){
+        idt=new Date(document.getElementById('logDatef-b').value)
+        idt.setHours(0,0,0,0)
+    }else if(picked=="Monthly"){
+        const filterBB=document.getElementById('logDatef-b')
+        const picked2=filterBB.options[filterBB.selectedIndex].value
+        idt=new Date()
+        idt.setMonth(picked2,1,2025)
+        idt.setHours(0,0,0,0)
+    }
+    if(picked!="default"){
+        if(picked=="earliest"){
+            dat.sort(function(a,b){
+            return new Date(a.logDate) - new Date(b.logDate)
+        })
+        }else if(picked=="latest"){
+            dat.sort(function(a,b){
+            return new Date(b.logDate) - new Date(a.logDate)
+        })
+        }else{
+            dat.sort(function(a,b){
+            return new Date(b.logDate) - new Date(a.logDate)})
+        }
+    dat.forEach(item=>{
+        let fdt=new Date(item.logDate)
+        fdt.setHours(0,0,0,0)
+        let rowstring=filterTool(item.logID,item.logDate,item.logMssg,item.logUser,item.logType)
+        console.log(fdt.getTime()+" "+idt.getTime())
+        if(idt){
+            if((picked=="Monthly" && fdt.getMonth()==idt.getMonth()) || (picked=="durSpecDate" && fdt.getTime()==idt.getTime()) ||(picked=="preSpecDate" && fdt<idt) || (picked=="postSpecDate" && fdt>idt)){
+            let r=document.createElement('tr')
+            r.innerHTML=rowstring
+            tbl.appendChild(r)
+        }
+        }else{
+            console.log(picked)
+            if(picked=="latest" || picked=="earliest"){
+            let r=document.createElement('tr')
+            r.innerHTML=rowstring
+            tbl.appendChild(r)
+            }
+        }
+    })
+    if(tbl.innerHTML==''){
+        tbl.innerHTML=`<td colspan="5" style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;">- -{[NO DATA FOUND]}- -</td>`
+    }
+    }else{
+        resetL()
+    }
+    
+}
+
+function typeFilter(){
+    tbl.innerHTML=''
+    const filterB=document.getElementById('logTypef')
+    const picked=filterB.options[filterB.selectedIndex].value
+    if(picked!="default"){
+        dat.forEach(item=>{
+        let rowstring=filterTool(item.logID,item.logDate,item.logMssg,item.logUser,item.logType)
+        if((picked=="logIn" && item.logType=="Logging In")||(picked=="LogOut" && item.logType=="Logging Out")||(picked=="AuthRetake" && item.logType=="Authorizing Retake") || (picked=="notif" && item.logType=="Notifying") || (picked=="insert" && item.logType=="Inserting") || (picked=="update" && item.logType=="Updating") || (picked=="delete" && item.logType=="Deleting") || (picked=="exam" && item.logType=="Exam") || (picked=="register" && item.logType=="Registration")){
+                let r=document.createElement('tr')
+                r.innerHTML=rowstring
+                tbl.appendChild(r)
+        }
+    })
+    if(tbl.innerHTML==''){
+        tbl.innerHTML=`<td colspan="5" style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;">- -{[NO DATA FOUND]}- -</td>`
+    }
+
+    }else{
+        resetL()
+    }
+    
+}
+
+function userFilter(){
+    tbl.innerHTML=''
+    const filterB=document.getElementById('logUTypef')
+    const picked=filterB.options[filterB.selectedIndex].value
+    if(picked!="default"){
+        dat.forEach(item=>{
+            let rowstring=filterTool(item.logID,item.logDate,item.logMssg,item.logUser,item.logType)
+        if(picked==item.logUser){
+                let r=document.createElement('tr')
+            r.innerHTML=rowstring
+            tbl.appendChild(r)
+        }
+    })
+    if(tbl.innerHTML==''){
+        tbl.innerHTML=`<td colspan="5" style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;">- -{[NO DATA FOUND]}- -</td>`
+    }
+    }else{
+        resetL()
+    }
+}
+async function insertL(condition){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*10)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:"has cleared the Logs from "+condition,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:"Deleting"
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.reload()
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    function generate(select){
+    let sectA=filterA.options[filterA.selectedIndex].textContent
+    if(sectA==""){
+        sectA="NO FILTER"
+    }
+    let sectB=""
+    let rem=document.querySelectorAll('[name=filterB]')
+    if(rem){
+        rem.forEach(item=>{
+            if(item.type=="date"){
+                sectB=item.value
+            }else{
+                sectB=item.options[item.selectedIndex].textContent
+            }
+            
+        })
+    }
+    count=5
+        let content=document.getElementById('datum').innerHTML
+        const repName="Exam Application Audit Logs"
+        let headR=document.getElementById('headDatum').innerHTML
+        let repFileName="AuditLog"
+        fetch('/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({sectA,sectB,content,repName,headR,count}),
+      })
+      .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      if(select=="PRINT"){
+        window.open(url, '_blank').print()
+      }else if(select=="EXPORT"){
+        const a = document.createElement('a');
+      a.href = url;
+      a.download = repFileName+'-report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      }
+    })
+    .catch(error => {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    });
+    
+    }
+
+</script>
+</body>
+</html>

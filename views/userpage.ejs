@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        label{
+            display: block;
+        }
+.container{
+    text-align: center;
+    align-self: center;
+    z-index: 100;
+    position:relative;
+    
+    
+}
+
+.tbl{
+    padding: 10px;
+    width: max-content;
+    margin: auto;
+
+}
+
+table{
+    display: inline-block;
+align-items: center;
+background-color: rgba(255, 255, 255, 0.697);
+border-collapse: collapse;
+
+
+}
+td,th{
+    border:2px solid black;
+    border-radius: 5px;
+}
+
+    </style>
+</head>
+<link rel="stylesheet" href="/style.css">
+<title><%= dat[0].uID %>'s Page</title>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Welcome, <%= dat[0].uName %></label>
+    </header>
+    <header class="don">
+        <div class="head">
+            <a href="/login">Log Out</a>
+        </div>
+    </header>
+    <div class="container" style="border-radius: 50px;">
+        <% let examPoints=0 %>
+        <% if(dat[0].uExamCheckVal){%>
+        <% JSON.parse(dat[0].uExamCheckVal).forEach(item=>{ %>
+                        <% examPoints=parseInt(examPoints)+parseInt(item) %>
+                            <% })%>
+                <% } %>
+        <%if(dat[0].uExamStat=="Untaken" || dat[0].uExamStat==null){%>
+            <h1 id="uExamStatMssg" style="text-align: center;">YOU HAVE NOT TAKEN THE EXAM.</h1>
+        <%}else{%>
+            <h1 id="uExamStatMssg" style="text-align: center;">YOU HAVE TAKEN THE EXAM.</h1>
+        <%}%>
+        <% if (dat[0].uExamStat == "Graded" || dat[0].uExamStat=="Retake") { %>
+            <div class="tbl">
+                <table>
+                    <thead>
+                        <th><%= dat[0].uExamScore %>/<%= examPoints %></th>
+                        <th><%= (((parseInt(dat[0].uExamScore)) / examPoints ) * 100).toFixed(2) %>%</th>
+                    </thead>
+                    <tbody>
+                        <td colspan="2" style="margin: 0px;">
+                            <% if ((parseInt(dat[0].uExamScore) / JSON.parse(dat[0].uExamCheck).length) >= 0.5) { %>
+                                <%= "You have Passed. Please Await futher instructions" %>
+                            <% } else { %>
+                                    <%= "You have Failed. Please try again on your next application" %>
+                                <% } %>
+                                <% if(dat[0].uExamStat=="Retake"){ %>
+                                    <label style="background-color: yellow; font-weight: bold; -webkit-text-stroke:1px rgb(250, 255, 181); margin-top: 5px; margin-bottom: 5px; margin-left: 0px; margin-right: 0px; width: 100%;">You are now allowed to try again.</label>
+                                <% } %>
+                                
+                            <% if(dat[0].uExamSched>=new Date()){%>
+                                Good Luck.
+                            <% }else if(dat[0].uExamSched < new Date()){ %>
+                                
+                            <%}else{%>
+                                Please wait your schedule.
+                            <%}%>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+        <% } %>
+        <% let fDT=new Date(dat[0].uExamSched) %>
+        <% fDT.setDate(fDT.getDate()) %>
+        <% if(dat[0].uExamStat=="Graded"){%>
+
+        <%}else if(fDT >=new Date()){ %>
+            <% let month,day %>
+            <% if((fDT.getMonth()+1)>=10){%>
+                <% month=(fDT.getMonth()+1) %>
+                <% }else{ %>
+                <% month=String((fDT.getMonth()+1)).padStart(2,'0')   %>
+                <% } %>
+            <% if((fDT.getDate())>=10){ %>
+                <% day=fDT.getDate() %>
+                <% }else{ %>
+                <% day=String(fDT.getDate()).padStart(2,'0') %> 
+                <% } %>
+            YOUR EXAM BEGINS AT <%= month %>/<%= day %>/<%= fDT.getFullYear() %>
+            <%}else{%>
+            <button onclick="location.replace('/user/exam')">Take The Exam</button>
+        <%}%>
+    </div>
+</body>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+<script>
+</script>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<head>
+    <style>
+       body > div{
+            width: 90%;
+        } 
+label{
+    display:block;
+}
+
+form{
+    justify-content: center;
+    align-items: center;
+    
+}
+label{
+    font-size: 30px;
+}
+
+header img{
+    border:none;
+    background-color: transparent;
+    padding: none;
+}
+
+img{
+    border-radius: 5px;
+    padding: 2px;
+    background-color: rgb(0, 153, 255);
+    border:2px solid rgb(0, 68, 113);
+}
+
+.buttCont{
+    margin-top: 0;
+    text-align: center;
+    border:none;
+}
+button{
+    font-size: 15px;
+}
+div{
+    padding: 1px;
+    width: fit-content;
+}
+input[type=radio]{
+    text-align: right;
+}
+.FormContainer{
+    background-color: rgb(255, 255, 255,0.75);
+    border: 1px solid black;
+    margin-bottom: 5px;
+    max-height: 80vh;
+}
+.container{
+    max-height: 56vh;
+    overflow-y: auto;
+    padding: 5px;
+    width: auto;
+}
+
+@media screen and (max-height:360px){
+    .container{
+        max-height: 15vh;
+    }
+    .FormContainer{
+        max-height: 40vh;
+    }
+}
+
+
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Exam</title>
+</head>
+<body>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">GOOD LUCK</label>
+    </header>
+    <header class="don">
+    </header>
+<div class="FormContainer">
+    <label id="uName" style="text-decoration: underline;">[INSERT NAME HERE]</label>
+        <label id="examDate" style="text-decoration: underline;">[INSERT DATE HERE]</label>
+    <form id="formation">
+        <div class="container" id="containerQ">
+            <fieldset class="question" id="q1Field">
+                <label>Question 1:</label>
+                <input type="text" id="q1Q" name="q[]">
+                <label>Answers:</label>
+                <label style="display:inline">Answer 1</label><input type="text" name="ans[]" id="ans1" value="A"><br>
+                <label style="display:inline">Answer 2</label><input type="text" name="ans[]" id="ans2" value="B"><br>
+                <label style="display:inline">Answer 3</label><input type="text" name="ans[]" id="ans3" value="C"><br>
+                <label style="display:inline">Answer 4</label><input type="text" name="ans[]" id="ans4" value="D"><br>
+                <label>Correct Answer:</label>
+                <input id="ansCorr" name="correctAns[]">
+                <br>
+                <button type="button">Remove Question</button>
+                </fieldset>
+               
+        </div>
+        <p id="prompt" class="loadPrompt" hidden>LOADING. . .</p>
+        <button type="button" onclick="validation()">Submit</button>
+        
+    </form>
+</div>
+<footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+
+function loadingLoop() {
+    let i = 0;
+    const promptE = document.getElementById('prompt');
+    promptE.style.display="block;"
+    function updatePrompt() {
+        if (i == 0) {
+            promptE.textContent = 'LOADING, PLEASE WAIT';
+        } else if (i == 1) {
+            promptE.textContent = 'LOADING, PLEASE WAIT.';
+        } else if (i == 2) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. .';
+        } else if (i == 3) {
+            promptE.textContent = 'LOADING, PLEASE WAIT. . .';
+        }
+
+        i = (i + 1) % 4; 
+    }
+
+    updatePrompt(); 
+    const intervalId = setInterval(updatePrompt, 500);
+
+    return intervalId;
+}
+
+    function stop(loop){
+        clearInterval(loop)
+        document.getElementById('prompt').style.display="none"
+    }
+    let stopkey;
+
+    let dt=new Date()
+    let ans=[]
+    let user=[]
+    function putinDate(){
+        document.getElementById('examDate').textContent=dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear()
+    }
+    putinDate()
+    let marks=[]
+
+    function validation(){
+        let z=0
+        let y=document.querySelectorAll(`input[name^="ans[]"]:checked,input[type=text]`)
+        let a=0
+        let aF=[]
+        Object.keys(y).forEach(item=>{
+            if(y[item].value!=""){
+                console.log(y[item].id)
+                aF.push({id:y[item].id,value:y[item].value})
+                a=parseInt(a)+1
+            }
+        })
+            if(a==0){
+                alert("Please answer everything.")
+                return;
+            }else if(a<corrAns.length){
+                const confirmation=confirm("Are you sure you want to submit an incomplete test?")
+                if(confirmation){
+                    answer(aF)
+                }else{
+                    document.getElementById('prompt').hidden=true;
+                    return
+                }
+            }else{
+                answer(aF)
+            }
+    }
+
+    function answer(y){
+        let z=[],zAns=[],zHit,zNextAns
+        let a=corrAns.length;
+        stopkey=loadingLoop()
+        for(let x=0; x<a; x++){
+            console.log(y[x])
+            zHit=false
+            for(let i=0; i<(z.length);i++ ){
+                if(z[i]==(x+1)){
+                    zHit=true
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:zAns[i]});
+                    if(y[x]!=undefined){
+                        if(isNaN(y[x].id.slice(-1))){
+                            z.push(y[x].id.slice(-1))
+                        }else{
+                            z.push(y[x].id.slice(-2))
+                        }
+                        zAns.push(y[x].value)
+                    }
+            }
+        } 
+        if(zHit==true){
+
+        } else if(y[x]==undefined){
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:"N/A"});
+            }else if(isNaN(y[x].id.slice(-2))){
+                if(y[x].id.slice(-1)==(x+1)){
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:y[x].value});
+                }else{
+                    z.push(y[x].id.slice(-1))
+                    zAns.push(y[x].value)
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:"N/A"});
+                }
+            }else{
+                if(y[x].id.slice(-2)==(x+1)){
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:y[x].value});
+                }else{
+                    z.push(y[x].id.slice(-2))
+                    zAns.push(y[x].value)
+                    ans.push({question:"Question No."+(parseInt(x)+1),answer:"N/A"});
+                }
+            }
+        }
+        check()
+    }
+
+    function check(){
+        let z=0
+        let e=-1;
+        marks=[]
+        for(i of ans){
+            e=parseInt(e)+1
+            let ansF=i.answer.toLowerCase()
+            let ansC=corrAns[e].toLowerCase()
+            if(i.answer.toLowerCase()==corrAns[e].toLowerCase() || ansC.includes(ansF) ){
+                        marks.push("Correct")
+                        z=parseInt(z)+corrVal[e]
+                    }else{
+                        marks.push("Incorrect")
+                    }
+        }
+        updateU(z)
+    }
+
+    function putinDate(){
+        document.getElementById('examDate').textContent=dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear()
+    }
+    putinDate()
+    let used=[]
+    fetch('/searchCurrentUser').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error('Error fetching data')
+        }
+    }).then(data=>{
+        used=[]
+        document.getElementById('uName').textContent=data[0].uName
+        user.push({uID:data[0].uID})
+        user.push({uName:data[0].uName})
+        user.push({uClass:data[0].uClass})
+        return fetch('/exam-data').then(response=>{
+        if(response.ok){
+            return response.json()
+        }else{throw new Error('Error fetching data')
+    }
+    }).then(data=>{
+        clearQ()
+        if(data==""){
+            addQ(examid,nAnsInpVal,nQinpVal)
+        }else{
+            let max=Math.round((data.length/2))
+            console.log(max)
+        for(x=0;x<max;x++){
+            function rollNum(){
+            var randNum=Math.floor(Math.random()*(data.length))
+            if(used.indexOf(randNum)!=-1){
+                return rollNum()
+            }else{
+                if(user[2].uClass!=data[randNum].examClass && data[randNum].examClass!="General"){
+                return rollNum()
+            }else{
+                used.push(randNum)
+                return randNum
+            }
+            }
+            }
+            let go=rollNum()
+            if(user[2].uClass==data[go].examClass || data[go].examClass=="General"){
+                addQ(data[go].examID,JSON.parse(data[go].examQ).choices,JSON.parse(data[go].examQ).question,JSON.parse(data[go].examImg))
+            corrAns.push(data[go].examAns)
+            corrVal.push(data[go].examVal)
+            corrValTotal=parseInt(corrValTotal)+data[go].examVal
+            }
+        }
+        popIMG()
+        }
+    })
+    })
+
+    let corrAns=[]
+    let corrVal=[]
+    let corrValTotal=0
+        
+
+
+    let examid="test"
+    let nAnsInpVal=["A","B","C","D"];
+    let choiceLett=nAnsInpVal
+    let nQinpVal="test"
+    let nQcorrAns="test"
+    let qInRem=[]
+    let qImgRem=[]
+    let qInChng=[]
+    async function addQ(examid,nAnsInpVal,nQinpVal,examImg){
+        //#region question counter
+        var qNo=document.querySelectorAll('.question').length+1;
+        if(qNo<10){
+            qNo="0"+String(qNo)
+        }
+        //#endregion
+        //#region main fieldset
+        var nQFieldSet=document.createElement('fieldset');
+        nQFieldSet.id="q"+qNo+"Field"
+        nQFieldSet.className="question"
+        //#endregion
+        //#region examID
+        var examIDhold=document.createElement('label')
+        examIDhold.textContent=examid
+        examIDhold.style.color="transparent";
+        examIDhold.style.userSelect="none"
+        if(examid!=""){
+            examIDhold.id=examid
+        }
+        nQFieldSet.appendChild(examIDhold)
+        //#endregion
+        //#region question label
+        var qLabel=document.createElement("label")
+        qLabel.textContent="Question "+qNo+":"
+        qLabel.id="qL"+qNo
+        nQFieldSet.appendChild(qLabel)
+        //#endregion
+        //#region question proper
+        var qInput=document.createElement('label')
+        qInput.id="q"+qNo+"Q"
+        qInput.name="q[]"
+        qInput.textContent=nQinpVal;
+        qInput.readOnly=true;
+        qInput.style.backgroundColor="rgba(219,178,50,0.75)"
+        qInput.style.margin="0"
+        qInput.style.paddingLeft="5px"
+        nQFieldSet.appendChild(qInput)
+        //#endregion
+        //#region question image
+        var imgButton=document.createElement('input')
+            imgButton.type="file"
+            imgButton.id=qInput.id+"-Img"
+            imgButton.accept="png"
+            var Ansimage=document.createElement('img')
+            Ansimage.style="width:650px; height:500px;"
+            Ansimage.id="wimageQ"+qNo
+            console.log(examImg[0])
+            if(examImg.length!=0){
+                Ansimage.src=examImg[0]
+            }
+            nQFieldSet.appendChild(Ansimage)
+        qInRem.push(Ansimage.src.slice(22))
+        qImgRem.push(Ansimage.id)
+        //#endregion
+        //#region answer section
+        var nAnsInp=[];
+        if(nAnsInpVal.length==0){
+            //#region single answer
+            var nAnsLabelF=document.createElement("label")
+        nAnsLabelF.textContent="Answer:"
+        nAnsLabelF.style="padding:5px; "
+        nQFieldSet.appendChild(nAnsLabelF)
+            var nAns=document.createElement('input')
+            nAns.name="ans[]"
+            nAns.type="text"
+            nAns.id="ans"+qNo
+            nQFieldSet.appendChild(nAns)
+            //#endregion
+        }else{
+            //#region multiple choice
+            var nAnsLabelF=document.createElement("label")
+            nAnsLabelF.textContent="Answers:"
+            nAnsLabelF.style="padding:5px; "
+            nQFieldSet.appendChild(nAnsLabelF)
+            for(var i=1;i<=4;i++){
+            var ansLabel=document.createElement('label')
+            ansLabel.textContent=nAnsInpVal[i-1]
+            ansLabel.style="display:inline;"
+            ansLabel.classList="radioLabel"
+            var ansInput=document.createElement('input')
+            ansInput.id="ans"+choiceLett[i-1]+qNo;
+            ansInput.name="ans[]"+qNo
+            ansInput.value=nAnsInpVal[i-1]
+            ansInput.type="radio"
+            ansLabel.htmlFor=ansInput.id
+            ansLabel.style.userSelect="none"
+            let digit="";
+            if(qNo<10){
+                digit="0"
+            }
+            var Ansimage=document.createElement('img')
+            if(examImg.length!=0){
+                
+            Ansimage.src=examImg[i]
+            }
+            Ansimage.id="img-"+choiceLett[i-1]+qNo
+                ansLabel.id="wimage"+choiceLett[i-1]+qNo
+                if(ansInput.value=="on"){
+
+                }else{
+                    nAnsInp.push(ansInput)
+                    nAnsInp.push(ansLabel)
+                    nAnsInp.push(Ansimage)
+                }
+                
+                Ansimage.style="width:100px; height:100px;margin-bottom:2px;"
+                qInRem.push(Ansimage.src.slice(22))
+                qImgRem.push(Ansimage.id)
+                qInChng.push(ansLabel.name)
+        }
+        //#endregion
+        nAnsInp.forEach(function(input){
+            nQFieldSet.append(input)
+        })
+        }
+        //#endregion 
+        document.getElementById('containerQ').appendChild(nQFieldSet)
+    }
+    
+    function clearQ(){
+        const questions = document.querySelectorAll('.question');
+        questions.forEach(fieldset=>{
+            fieldset.parentNode.removeChild(fieldset);
+        })   
+        }
+
+async function updateU(score){
+    const id={
+        uID:user[0].uID
+    }
+    const base=await searchU(id.uID)
+    if(base=="no"){
+console.log("nope. update cancelled")
+return stop(stopkey)
+    }
+    let sched=new Date()
+    let send={
+        uID:base.uID,
+        uExamStat:"Graded",
+        uExamSched:sched.toISOString().slice(0, 19).replace('T', ' '),
+        uExamAns:ans,
+        uExamCheck:marks,
+        uExamCheckVal:corrVal,
+        uExamScore:score,
+        uExamPoints:corrValTotal
+    } 
+    if(Object.keys(send).length==1){
+        console.log("Update Cancelled")
+        return stop(stopkey)
+    }else{
+        try{
+            const response=await fetch('/updateUser',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(send)
+        })
+    const result=await response.json()
+    if(response.ok){
+        let log="has answered the Exam"
+        let type="Exam"
+        insertL(log,type)
+    }else{
+        stop(stopkey)
+    }
+        }catch(err){
+            alert(err)
+            stop(stopkey)
+        }
+    }
+}
+
+async function searchU(ID){
+    const response=await fetch(`/searchUser?uID=${ID}`)
+    const result=await response.json()
+    if(response.ok){
+        const dataF={
+            uID:result[0].uID,
+            uName:result[0].uName,
+            uPass:result[0].uPass,
+            uGender:result[0].uGender,
+            uPhoNo:result[0].uPhoNo,
+            uType:result[0].uType
+        }
+        return dataF
+    }else{
+        return "no"
+    }
+}
+
+async function searchI(ID){
+    let path=ID
+    try{
+    const response=await fetch(`/searchI?path=${path}`)
+    const result=await response.json()
+    if(result.message=="Image found"){
+        return "OK"
+    }else{
+        return "No"
+    }
+}catch(err){
+    console.log(err)
+}
+}
+
+async function popIMG(){
+    let x=-1
+    let y=-1
+    let z=0
+    for(e of qInRem){
+        x=parseInt(x)+1
+        y=parseInt(y)+1
+        let m=document.querySelectorAll('[id^="wimage"]')
+        let lookup=await searchI(e)
+        if(lookup!="OK"){
+            z=parseInt(z)+1
+            if(document.getElementById(qImgRem[x-1])!=null && !(qImgRem[x-1].includes('Q'))){
+                    document.getElementById(qImgRem[x-1]).insertAdjacentHTML('afterend', '<br>');
+                }else if(document.getElementById(qImgRem[x+1])!=null && !(qImgRem[x].includes('Q'))){
+                    
+                    
+                }
+                
+                if(document.getElementById(`${qImgRem[x]}`)!=null){
+                    document.getElementById(`${qImgRem[x]}`).hidden=true
+                }
+            if(m[y]){
+                if(!(m[y].id.includes('Q'))){
+                document.getElementById(m[y].id).style.position="static"
+            document.getElementById(m[y].id).style.Top="-20"
+            document.getElementById(m[y].id).style.marginBottom="5px";
+            document.getElementById(m[y].id).insertAdjacentHTML('afterend', '<br>');
+            }
+            }
+            
+        }else{
+            console.log("Stay")
+            if(z>1 && document.getElementById(qImgRem[x-1])!=null){
+                if((document.getElementById(qImgRem[x-1]).hidden==true && qImgRem[x-1].includes(qImgRem[x].slice(-1)) && qImgRem[x-1]) ||(document.getElementById(qImgRem[x+1]) && document.getElementById(qImgRem[x+1]).hidden==true)){
+                    document.getElementById(qImgRem[x]).insertAdjacentHTML('afterend', '<br>');
+                    document.getElementById(qImgRem[x]).insertAdjacentHTML('afterend', '<br>');
+                    
+            }
+            }
+            
+        }
+        if(z==5){
+            z=0
+        }
+        
+    }
+}
+
+async function insertL(logCont,logType){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*9)
+            return randNum
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.replace('/user/')
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+</script>
+</html>

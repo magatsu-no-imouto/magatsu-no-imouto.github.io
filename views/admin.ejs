@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        table{
+            border-spacing: 0;
+            border-collapse:separate;
+            margin:0 auto;
+            
+        }
+        td,th{
+            
+            border: solid 1px black;
+        }
+        .scroll{
+            width: 80%;
+            max-height: 55vh;
+            overflow:auto;
+            text-align: center;
+            padding: 10px;
+        }
+        .scroll2{
+            font-size: 12px;
+            background-color: transparent;
+            border: none;
+            max-height: 100px;
+            max-width: 200px;
+            overflow-y: auto;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-align:center;
+            padding: 0;
+
+        }
+        .case{
+            text-align: left;
+            width: fit-content;
+            margin-left: 5px;
+            margin-right:0%;
+            margin-bottom: 5px;
+        }
+        input,select{
+                width: fit-content;
+                height: fit-content;
+                font-size: 32px;
+                padding-top: 2px;
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+                margin-left: 2px;
+            }
+            button{
+                margin-right: 2px;
+            }
+        @media screen and (max-width: 990px) {
+            .scroll{
+            width: fit-content;
+            border: 5px solid rgba(219, 177, 50, 0.2);
+            max-height:430px;
+            max-width: 725px;
+            overflow-y: auto;
+            overflow-x:auto;
+            text-align: center;
+            }
+            input,select{
+                width: fit-content;
+                height: fit-content;
+                font-size: large;
+            }
+            select{
+                padding-top: 2px;
+                padding-bottom: 5px;
+            }
+        }
+        .stick{
+            position:sticky;
+            top:0;
+            background-color:#0099FF;
+            z-index: 2;
+            height: 50px;
+            border-bottom: black solid 5px;
+        }
+        .stick::before{
+            
+            content:"";
+            position: absolute;
+            background-color: rgba(219, 177, 50);
+            height: 25px;
+            width:102.3%;
+            top:-25px;
+            left:-1px;
+            z-index: 1;
+        }
+        .stick::after{
+            position: absolute;
+            background-color: white;
+            height: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="/style.css">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <% const datF=dat %>
+    <header class="two">
+        <img src="/media/pgcLogo.png" style="margin-top: 10px; width: 130px;">
+    </header>
+    <header>
+        <label style="display:block; font-size: 35px;">Admin Module</label>
+    </header>
+    <header class="don" >
+        <div class="head">
+            <a href="/login">Log Out</a>
+        <a href="/admin/exam">Edit The Exam</a>
+        <a name="noMods" href="/admin/users">Manage Users</a>
+        <a name="noMods" href="/admin/applicants">Manage Applicants</a></header>
+        </div>
+        <div class="case">
+            <label style="display:block;">Filter By:</label>
+            <select id="filterSel">
+                <option value=""></option>
+                <option value="name">Name</option>
+                <option value="gender">Gender</option>
+                <option value="verification">Verification Status</option>
+                <option value="Emptype">Employment Type</option>
+                <option value="EmpClass">Employee Specialization</option>
+                <option value="DateCreated">Date Created</option>
+                <option value="DateExam">Exam Schedule</option>
+                <option value="ExamStat">Exam Status</option>
+                <option value="ExamScore">Exam Score</option>
+                <option value="ExamResult">Exam Grade</option>
+            </select>
+        <button type="button" id="filterButt">FILTER</button>
+        <button type="button" id="printButt" onclick="generate('PRINT')">PRINT</button>
+        <button type="button" id="exportButt" onclick="generate('EXPORT')">EXPORT</button>
+        <!--  -->
+        </div>
+    <div class="scroll">
+        <table id="fullDocument">
+            <thead >
+                    <th class="stick"></th>
+                    <th class="stick" name="headRow">Mark</th>
+                    <th class="stick" name="headRow">Date of Exam</th>
+                    <th class="stick" name="headRow">Full Name</th>
+                    <th class="stick" name="headRow">Specialization</th>
+                    <th class="stick" name="headRow">Exam Status</th>
+                    <th class="stick" name="headRow">Exam Answers</th>
+                    <th class="stick" name="headRow">Exam Score</th>
+                
+            </thead>
+            <tbody id="datum">
+                <% dat.forEach(item=>{%>
+                    <tr>
+                        <td>
+                        <% if(item.uStat=="Unverified"){ %>
+                            <button type="button" onclick="notifyV('<%=item.uName %>','<%=item.uEmail %>','<%=item.uID %>')">
+                                Resend Verification
+                            </button>
+                        <% }else if(item.uExamStat=="Untaken" || item.uExamStat=="Retake"){ %>
+                            <button type="button" onclick="notifyE('<%=item.uName %>','<%= item.uEmail %>','<%= item.uExamSched %>')">Notify Them</button>
+                        <% }else if((item.uExamScore / item.uExamPoints)< 0.5){ %>
+                            <button type="button" onclick="authorizeR('<%= item.uID %>','<%=item.uName %>')">Authorize Retake</button>
+                        <% } %>
+                    </td>
+                        <td name="toPrint"><% if(item.uExamScore==null || item.uExamStat=="Retake"){%>
+                            - -
+            <%                }else{ %>
+                <%if((item.uExamScore / item.uExamPoints) >=0.5){ %>
+                    PASSED 
+                <%}else{%>
+                    FAILED
+            <%}%>
+            <%                } %></td>
+                        <td name="toPrint">
+                            <% let fDT=new Date(item.uExamSched) %>
+                            <% let month,day %>
+                            <% if((parseInt(fDT.getMonth()+1)>=10)){ %>
+                            <% month=(parseInt(fDT.getMonth())+1)%>
+                            <% }else{  %>
+                            <% month=String(parseInt(fDT.getMonth()+1)).padStart(2,'0') %>
+                            <% } %>
+                            <% if(fDT.getDate() >=10){ %>
+                            <% day=fDT.getDate() %>
+                            <% }else{ %>
+                            <% day=String(fDT.getDate()).padStart(2,'0') %>
+                            <% } %>
+                            <%= month+"-"+day+"-"+fDT.getFullYear() %>
+                        </td>
+                        <td style="width: fit-content;" name="toPrint"><%= item.uName %></td>
+                        <td name="toPrint"><%= item.uClass %></td>
+                        <td name="toPrint"><%= item.uExamStat %></td>
+                            <td name="toPrint">
+                                <div class="scroll2"><% if(item.uExamScore==null ||item.uExamStat=="Retake"){%>
+                                --
+                <%                }else{ %>
+                    <%  for(let x=0; x< JSON.parse(item.uExamAns).length; x++){%>
+                        <% const parsedAns = JSON.parse(item.uExamAns)[x] %>
+                        <%= parsedAns.question.slice(12) %>.) <%= JSON.parse(item.uExamCheck)[x] %> -
+                        <%= JSON.parse(item.uExamCheckVal)[x] %> pts
+                    <br>
+                        <%} %>
+                <%                } %></div></td>
+                        <td name="toPrint"><% if(item.uExamScore==null || item.uExamStat=="Retake"){%>
+                            --
+            <%                }else{ %>
+                            <%= item.uExamScore %>
+            <%                } %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    
+    <footer class="twoBottom"></footer>
+<footer></footer>
+<footer class="donBottom"></footer>
+</body>
+<script>
+    let dat
+    const doc=document.getElementById('fullDocument').outerHTML
+    const tabul=document.getElementById('datum')
+    const filterA=document.getElementById('filterSel')
+
+    fetch('/user-data').then((response)=>{
+    if(response.ok){
+        return response.json();
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then((data)=>{
+    dat=data;
+})
+    async function notifyV(Name,Email,ID){
+        const datum={
+            uID:ID,
+            uName:Name,
+            uEmail:Email
+        }
+        try{
+            const response=await fetch('/verifyNotif',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                let mssg=`had reminded ${ID} about their account's verification status`
+                let logType="Notifying"
+                insertL(mssg,logType)
+            }
+        }catch(err){
+            console.log(error)
+        }
+    }
+
+    async function notifyE(ID,Email,schedule){
+        const fDT=new Date(schedule)
+        let month,monthText,day,weekday
+            if((parseInt(fDT.getMonth())+1)>=10){
+                month=fDT.getMonth()+1
+            }else{
+                month=String(fDT.getMonth()+1).padStart(2,'0')
+            }
+            if((parseInt(fDT.getDate)+1)>=10){
+                day=fDT.getDate()
+            }else{
+                day=String(fDT.getDate()).padStart(2,'0')
+            }
+            switch(parseInt(month)){
+                case 1:
+                    monthText="January"
+                    break;
+                case 2:
+                    monthText="Febuary"
+                    break;
+                case 3:
+                    monthText="March"
+                    break;
+                case 4:
+                    monthText="April"
+                    break;
+                case 5:
+                    monthText="May"
+                    break;
+                case 6:
+                    monthText="June"
+                    break;
+                case 7:
+                    monthText="July"
+                    break;
+                case 8:
+                    monthText="August"
+                    break;
+                case 9:
+                    monthText="September"
+                    break;
+                case 10:
+                    monthText="October"
+                    break;
+                case 11:
+                    monthText="November"
+                    break;
+                case 12:
+                    monthText="December"
+                    break;
+                default:
+                    "ERROR"
+                    break;
+            }
+            switch (fDT.getDay()) {
+            case 0:
+                weekday= "Sunday";
+                break;
+            case 1:
+                weekday= "Monday";
+                break;
+            case 2:
+                weekday= "Tuesday";
+                break;
+            case 3:
+                weekday= "Wednesday";
+                break;
+            case 4:
+                weekday= "Thursday";
+                break;
+            case 5:
+                weekday= "Friday";
+                break;
+            case 6:
+                weekday= "Saturday";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+            let scheduleDate=``
+            let nDate=new Date(new Date().getFullYear(),new Date().getMonth()+2, 0)
+            let monthDiff=parseInt(nDate.getDate())-parseInt(new Date().getDate())
+            let nuDate=new Date()
+                nuDate.setDate(nuDate.getDate()+(parseInt(nDate.getDate())-parseInt(new Date().getDate())))
+            
+            if(new Date()>=schedule){
+                scheduleDate="as soon as possible, otherwise, your application will be revoked"
+            }else if(((fDT.getDate()-nuDate.getDate())+monthDiff)<=7){
+                scheduleDate=`this ${weekday}, ${monthText} ${day}. (${month}/${day}/${fDT.getFullYear()})`
+            }else if(((fDT.getDate()-nuDate.getDate())+monthDiff)>7 && ((fDT.getDate()-nuDate.getDate())+monthDiff)<=14){
+                scheduleDate=`next week, ${weekday}, ${monthText} ${day}. (${month}/${day}/${fDT.getFullYear()})`
+            }else if((parseInt((fDT.getMonth()+1))-(parseInt(new Date().getMonth()+1)))>=1){
+                scheduleDate=`next month on ${weekday}, ${monthText} ${day}. (${month}/${day}/${fDT.getFullYear()})`
+            }
+        datum={
+            uName:ID,
+            uEmail:Email,
+            uExamSched:scheduleDate
+        }
+        try{
+            const response=await fetch('/remindNotif',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                let mssg=`had notified ${ID} about their scheduled Exam`
+                let logType="Notifying"
+                insertL(mssg,logType)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    async function authorizeR(ID,name){
+        const datum={
+            uID:ID,
+            uExamStat:"Retake"
+        }
+        try{
+            const response=await fetch('/updateUser',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(datum)
+        })
+    const result=await response.json()
+    if(response.ok){
+        let mssg=`had authorized the retaking of ${name}'s Exam`
+        let logType="Authorizing Retake"
+        insertL(mssg,logType)
+    }
+        }catch(err){
+            alert(err)
+        }
+    }
+
+function resetP(){
+    fetch('/user-data').then((response)=>{
+    if(response.ok){
+        return response.json();
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then((data)=>{
+    dat=data;
+})
+    tabul.innerHTML=`<% dat.forEach(item=>{%>
+                    <tr>
+                        <td>
+                        <% if(item.uStat=="Unverified"){ %>
+                            <button type="button" onclick="notifyV('<%=item.uName %>','<%=item.uEmail %>','<%=item.uID %>')">
+                                Resend Verification
+                            </button>
+                        <% }else if(item.uExamStat=="Untaken" || item.uExamStat=="Retake"){ %>
+                            <button type="button" onclick="notifyE('<%=item.uName %>','<%= item.uEmail %>','<%= item.uExamSched %>')">Notify Them</button>
+                        <% }else if((item.uExamScore / item.uExamPoints)< 0.5){ %>
+                            <button type="button" onclick="authorizeR('<%= item.uID %>','<%=item.uName %>')">Authorize Retake</button>
+                        <% } %>
+                    </td>
+                        <td name="toPrint"><% if(item.uExamScore==null || item.uExamStat=="Retake"){%>
+                            - -
+            <%                }else{ %>
+                <%if((item.uExamScore / item.uExamPoints) >=0.5){ %>
+                    PASSED 
+                <%}else{%>
+                    FAILED
+            <%}%>
+            <%                } %></td>
+                        <td name="toPrint">
+                            <% let fDT=new Date(item.uExamSched) %>
+                            <% let month,day %>
+                            <% if((parseInt(fDT.getMonth()+1)>=10)){ %>
+                            <% month=(parseInt(fDT.getMonth())+1)%>
+                            <% }else{  %>
+                            <% month=String(parseInt(fDT.getMonth()+1)).padStart(2,'0') %>
+                            <% } %>
+                            <% if(fDT.getDate() >=10){ %>
+                            <% day=fDT.getDate() %>
+                            <% }else{ %>
+                            <% day=String(fDT.getDate()).padStart(2,'0') %>
+                            <% } %>
+                            <%= month+"-"+day+"-"+fDT.getFullYear() %>
+                        </td>
+                        <td style="width: fit-content;" name="toPrint"><%= item.uName %></td>
+                        <td name="toPrint"><%= item.uClass %></td>
+                        <td name="toPrint"><%= item.uExamStat %></td>
+                            <td name="toPrint">
+                                <div class="scroll2"><% if(item.uExamScore==null ||item.uExamStat=="Retake"){%>
+                                --
+                <%                }else{ %>
+                    <%  for(let x=0; x< JSON.parse(item.uExamAns).length; x++){%>
+                        <% const parsedAns = JSON.parse(item.uExamAns)[x] %>
+                        <%= parsedAns.question.slice(12) %>.) <%= JSON.parse(item.uExamCheck)[x] %> -
+                        <%= JSON.parse(item.uExamCheckVal)[x] %> pts
+                    <br>
+                        <%} %>
+                <%                } %></div></td>
+                        <td name="toPrint"><% if(item.uExamScore==null || item.uExamStat=="Retake"){%>
+                            --
+            <%                }else{ %>
+                            <%= item.uExamScore %>
+            <%                } %></td>
+                    </tr>
+                <% }); %>`
+    if(tabul.innerHTML==''){
+        const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ TABLE EMPTY ] } --</td>
+            `
+            tabul.appendChild(row)
+}
+}
+
+filterA.addEventListener('change',function(){
+    resetP()
+    let choice=filterA.options[filterA.selectedIndex].value
+    const filterWhat=document.getElementById('filterButt')
+    let rem=document.querySelectorAll('[name=filterB]')
+    filterWhat.onclick=function(){
+            resetP()
+        }
+        if(rem){
+            rem.forEach((item)=>{
+                filterA.parentNode.removeChild(item)
+            })
+        }
+    if(choice=="name"){
+        filterWhat.onclick=function(){
+            nameFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uIDf" name="filterB">
+        <option value="default"></option>
+        <option value="with the name">Specific Name</option>
+        </select>
+        `);
+        const filterB=document.getElementById('uIDf')
+        filterB.addEventListener('change',function(){
+            let choiceB=filterB.options[filterB.selectedIndex].value
+            let rem=document.getElementById('uIDf-b')
+            if(rem){
+                filterA.parentElement.removeChild(rem)
+            }
+            if(choiceB=="with the name"){
+                filterB.insertAdjacentHTML('afterend',`
+                <input type="text" id='uIDf-b' style="width:10ch;" name="filterB">
+                `)
+            }
+        })
+        dat.forEach((item)=>{
+            const op=document.createElement('option')
+            op.value=item.uID
+            op.textContent=item.uName
+            document.getElementById('uIDf').appendChild(op)
+        })
+    }else if(choice=="gender"){
+        filterWhat.onclick=function(){
+            genderFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uGendf" name="filterB">
+        <option value="default"></option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        </select>
+        `);
+    }else if(choice=="verification"){
+        filterWhat.onclick=function(){
+            veriFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uStatf" name="filterB">
+        <option value="default"></option>
+        <option value="Verified">Verified</option>
+        <option value="Unverified">Unverified</option>
+        </select>
+        `);
+    }else if(choice=="Emptype"){
+        filterWhat.onclick=function(){
+           eTypeFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uTypef" name="filterB">
+        <option value="default"></option>
+        <option value="Student">OJT</option>
+        <option value="Professional">Employee</option>
+        </select>
+        `);
+    }else if(choice=="DateCreated"){
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uDateCf" name="filterB">
+        <option value="default"></option>
+        <option value="Earliest">Earliest</option>
+        <option value="Latest">Latest</option>
+        <option value="Monthly">Monthly</option>
+        <option value="PreSpecDate">Before Specific Date</option>
+        <option value="DuringSpecDate">@ Specific Date
+        <option value="PostSpecDate">After Specific Date</option>
+        </select>
+        `);
+        const filterB=document.getElementById('uDateCf')
+        
+        filterB.addEventListener('change',function(){
+            let re=document.querySelector('[id=uDateCf-b]')
+            let choiceB=filterB.options[filterB.selectedIndex].value
+            if(choiceB.includes("SpecDate")){
+                if(re){
+                    if(re.outerHTML.includes('select')){
+                    filterA.parentNode.removeChild(re)
+                    filterB.insertAdjacentHTML('afterend','<input id="uDateCf-b" name="filterB" type="date" style="margin-left:5px;">')
+                }
+                }else{
+                    filterB.insertAdjacentHTML('afterend','<input id="uDateCf-b" name="filterB" type="date" style="margin-left:5px;">')
+                }
+                
+        }else if(choiceB=="Monthly"){
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+                filterB.insertAdjacentHTML('afterend','<Select id="uDateCf-b" name="filterB" style="margin-left:5px;"><option value="default"></option><option value="0">January</option><option value="1">Febuary</option><option value="2">March</option><option value="3">April</option><option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option><option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>')
+            }else{
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+        }
+        })
+        filterWhat.onclick=function(){
+            dCreatedFilter()
+        }
+        
+    }else if(choice=="DateExam"){
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uExSchedf" name="filterB">
+            <option value="default"></option>
+        <option value="Earliest">Earliest</option>
+        <option value="Latest">Latest</option>
+        <option value="Monthly">Monthly</option>
+        <option value="PreSpecDate">Before Specific Date</option>
+        <option value="DuringSpecDate">@ Specific Date
+        <option value="PostSpecDate">After Specific Date</option>
+        </select>
+        `);
+        const filterB=document.getElementById('uExSchedf')
+        filterB.addEventListener('change',function(){
+            let re=document.querySelector('[id=uExSchedf-b]')
+            let choiceB=filterB.options[filterB.selectedIndex].value
+            if(choiceB.includes("SpecDate")){
+                if(re){
+                    if(re.outerHTML.includes('select')){
+                        filterA.parentNode.removeChild(re)
+                        filterB.insertAdjacentHTML('afterend','<input id="uExSchedf-b" name="filterB" type="date" style="margin-left:5px;">')
+                    }
+                    
+                }else{
+                filterB.insertAdjacentHTML('afterend','<input id="uExSchedf-b" name="filterB" type="date" style="margin-left:5px;">')
+            }
+        }else if(choiceB=="Monthly"){
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+            filterB.insertAdjacentHTML('afterend','<Select id="uExSchedf-b" name="filterB" style="margin-left:5px;"><option value="default"></option><option value="0">January</option><option value="1">Febuary</option><option value="2">March</option><option value="3">April</option><option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option><option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>')
+        }else{
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+        }
+        })
+        filterWhat.onclick=function(){
+            dExamFilter()
+        }
+    }else if(choice=="ExamStat"){
+        filterWhat.onclick=function(){
+            exStatFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uExStatf" name="filterB">
+        <option value="default"></option>
+        <option value="Untaken">Untaken</option>
+        <option value="Graded">Taken</option>
+        <option value="Retake">Retake</option>
+        </select>
+        `);
+    }else if(choice=="ExamScore"){
+        filterWhat.onclick=function(){
+            exScoreFilter()
+        }
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uExScoref" name="filterB">
+        <option value="default"></option>
+        <option value="Highest">Highest</option>
+        <option value="Lowest">Lowest</option>
+        <option value="PreSpecific">Less Than</option>
+        <option value="Specific">Of</option>
+        <option value="PostSpecific">Greater Than</option>
+        </select>
+        `);
+        const filterB=document.getElementById('uExScoref')
+        
+        filterB.addEventListener('change',function(){
+            let choiceB=filterB.options[filterB.selectedIndex].value
+        let re=document.querySelector('[id=uExScoref-b]')
+            if(choiceB.includes("Specific")){
+            if(re){
+                
+            }else{
+                
+            filterB.insertAdjacentHTML('afterend',`<input type="number" id="uExScoref-b" style="width:4ch;margin-left:5px;">            
+            `)
+            }
+        }else{
+            if(re){
+                filterA.parentNode.removeChild(re)
+            }
+        }
+        })
+    }else if(choice=="ExamResult"){
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uExScoref" name="filterB">
+        <option value="default"></option>
+        <option value="Passed">Passed</option>
+        <option value="Failed">Failed</option>
+        </select>
+        `);
+        filterWhat.onclick=function(){
+            exGradeFilter()
+        }
+    }else if(choice=="EmpClass"){
+        filterA.insertAdjacentHTML('afterend',`
+        <select id="uEmpClassf" name="filterB">
+        <option value="default"></option>
+        <option value="Admin">Admin</option>
+        <option value="Programming">Programming</option>
+        <option value="Technical">Technical</option>
+        </select>
+        `);
+        filterWhat.onclick=function(){
+            empClassFilter()
+        }
+    }
+    
+})
+
+//#region FILTERS GALORE
+//#region Conditional Filters
+
+function filterTool(uName,uClass,uID,uEmail,uExamSched,uExamStat,uExamScore,uExamPoints,uStat,examAns,examCheck,examVal){
+    let button="- -"
+            let ntfButt=`<button type="button" onclick="notifyE('${uName}','${uEmail}','${uExamSched}')">Notify Them</button>`
+            let rtkButt=`<button type="button" onclick="authorizeR('${uID}','${uName}')">Authorize Retake</button>`
+            let VrfyButton=`<button type="button" onclick="notifyV('${uName}','${uEmail}','${uID}')">Resend Verification</button>`
+            let compute="- -"
+            if(uExamStat!="Retake" && uExamStat!="Untaken"){
+                let math=(uExamScore/uExamPoints)
+                if(math>=0.5){
+                    compute="PASSED"
+                }else{
+                    compute="FAILED"
+                }
+            }
+            if(uStat!="Verified"){
+                button=VrfyButton
+            }else if(uExamStat=="Untaken" || uExamStat=="Retake"){ 
+                button=ntfButt
+            }else if(compute=="PASSED"){
+                button=""
+            }else{
+                button=rtkButt
+                        }  
+            let ans=[]
+            let results="- -"
+            if(examAns!=null && uExamStat!="Retake"){
+                for(x=0;x<examAns.length;x++){
+                    ans.push(examAns[x].question.slice(12)+".) "+examCheck[x]+" - "+examVal[x]+"pts")
+                    results=ans.join('<br>')
+                }
+            }
+            let fdt=new Date(uExamSched)
+            let month,day;
+            if((parseInt(fdt.getMonth())+1)>=10){
+                month=(parseInt(fdt.getMonth())+1)
+            }else{
+                month=String((parseInt(fdt.getMonth())+1)).padStart(2,'0')
+            }
+            if((parseInt(fdt.getDate()))>=10){
+                day=fdt.getDate()
+            }else{
+                day=String(fdt.getDate()).padStart(2,'0')
+            }
+            let dateString=`${month}-${day}-${fdt.getFullYear()}`
+            let score="- -"
+            if(uExamScore!=null && uExamStat!="Retake"){
+                score=uExamScore
+            }
+            let combine=`<td>${button}</td>
+            <td name="toPrint">${compute}</td>
+            <td name="toPrint">${dateString}</td>
+            <td name="toPrint">${uName}</td>
+            <td name="toPrint">${uClass}</td>
+            <td name="toPrint">${uExamStat}</td>
+            <td name="toPrint"><div class="scroll2">
+                ${results}
+                </div></td>
+            <td name="toPrint">${score}</td>`
+            return combine
+}
+
+async function nameFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uIDf').options[document.getElementById('uIDf').selectedIndex]
+    if(picked.value=="default"){
+        resetP()
+    }else if(picked.value=='with the name'){
+        let choice=document.getElementById('uIDf-b').value
+        dat.forEach((item)=>{
+            let name=item.uName
+            let namef=name.toLowerCase()
+            let choicef=choice.toLowerCase()
+        if(namef.includes(choicef)){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            console.log(examAns)
+            let rowString=filterTool(item.uName,item.uclass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            const row=document.createElement('tr')
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+        }
+    })
+        if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- {[NO RECORDS FOUND]} --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        const lookup={
+        uID:picked.value
+        }
+        try{
+            const response=await fetch(`/searchUser?uID=${lookup.uID}`)
+            const result=await response.json()
+            if(response.ok){
+                let resultFAns=JSON.parse(result[0].uExamAns)
+                let resultFCheck=JSON.parse(result[0].uExamCheck)
+                let resultFVal=JSON.parse(result[0].uExamCheckVal)
+                let resultF=JSON.parse(JSON.stringify(result[0]))
+                const row=document.createElement('tr')
+                let rowString=filterTool(resultF.uName,resultF.uClass,resultF.uID,resultF.uEmail,resultF.uExamSched,resultF.uExamStat,resultF.uExamScore,resultF.uExamPoints,resultF.uStat,resultFAns,resultFCheck,resultFVal)
+                row.innerHTML=rowString
+                tabul.appendChild(row)
+            }
+        }catch(err){
+            console.log("Something went wrong: "+err)
+        }
+    }
+}
+
+function genderFilter(){
+    const picked=document.getElementById('uGendf').options[document.getElementById('uGendf').selectedIndex]
+    tabul.innerHTML=``
+    if(picked.value!="default"){
+            dat.forEach((item)=>{
+        if(item.uGender==picked.value){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            
+            const row=document.createElement('tr')
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+        }
+    })
+        if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- {[NO RECORDS FOUND]} --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function veriFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uStatf').options[document.getElementById('uStatf').selectedIndex]
+    if(picked.value!="default"){
+        dat.forEach((item)=>{
+        if(item.uStat==picked.value){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            
+            const row=document.createElement('tr')
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+        }
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- {[NO RECORDS FOUND]} --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function eTypeFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uTypef').options[document.getElementById('uTypef').selectedIndex]
+    if(picked.value!="default"){
+        dat.forEach((item)=>{
+        if(item.uType==picked.value){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            const row=document.createElement('tr')
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+        }
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- {[NO RECORDS FOUND]} --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function exStatFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uExStatf').options[document.getElementById('uExStatf').selectedIndex]
+    if(picked.value!="default"){
+        dat.forEach((item)=>{
+        if(item.uExamStat==picked.value){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            const row=document.createElement('tr')
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+        }
+        
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- {[NO RECORDS FOUND]} --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function exGradeFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uExScoref').options[document.getElementById('uExScoref').selectedIndex]
+    if(picked.value!="default"){
+        dat.forEach((item)=>{
+        if(item.uExamScore!=null){
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            let compute="- -"
+            if(item.uExamStat!="Retake" && item.uExamStat!="Untaken"){
+                let math=(item.uExamScore/item.uExamPoints)
+                if(math>=0.5){
+                    compute="PASSED"
+                }else{
+                    compute="FAILED"
+                }
+            }
+            if(compute==String(picked.value).toUpperCase()){
+                const row=document.createElement('tr')
+                let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+                row.innerHTML=rowString
+            tabul.appendChild(row)
+            }
+        }
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function exScoreFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uExScoref').options[document.getElementById('uExScoref').selectedIndex]
+    if(picked.value!="default"){
+        if(picked.value=="Highest"){
+            dat.sort(function(a,b){
+            return b.uExamScore - a.uExamScore;
+        })
+        }else{
+            dat.sort(function(a,b){
+            return a.uExamScore - b.uExamScore;
+        })
+        }
+        dat.forEach((item)=>{
+        if(item.uExamScore!=null){
+            let examVal=JSON.parse(item.uExamCheckVal)
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            if(item.uExamStat!="Retake"){
+                let choice=picked.value
+                if(choice.includes('Specific')){
+                    const picked2=document.getElementById('uExScoref-b').value
+                    if((choice=="PostSpecific" && picked2<item.uExamScore) || (choice=="PreSpecific" && picked2>item.uExamScore) || picked2==item.uExamScore){
+                        const row=document.createElement('tr')
+                        row.innerHTML=rowString
+                        tabul.appendChild(row)
+                    }else{
+                        if(picked2==item.uExamScore){
+                        const row=document.createElement('tr')
+                        row.innerHTML=rowString
+                        tabul.appendChild(row)
+                    }
+                    }
+                }else{
+                    const row=document.createElement('tr')
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+                }
+            }
+        }
+        
+    })
+    
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+function empClassFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uEmpClassf').options[document.getElementById('uEmpClassf').selectedIndex]
+    if(picked.value!="default"){
+        dat.forEach((item)=>{
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            let compute="- -"
+            if(item.uExamStat!="Retake" && item.uExamStat!="Untaken"){
+                let math=(item.uExamScore/item.uExamPoints)
+                if(math>=0.5){
+                    compute="PASSED"
+                }else{
+                    compute="FAILED"
+                }
+            }
+            console.log(item.uClass)
+            if(item.uClass==picked.value){
+                const row=document.createElement('tr')
+                let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+                row.innerHTML=rowString
+            tabul.appendChild(row)
+            }
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+//#endregion
+
+//#region Date Filters
+function dCreatedFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uDateCf').options[document.getElementById('uDateCf').selectedIndex]
+    let picked2
+    if(document.getElementById('uDateCf-b')){
+        if(document.getElementById('uDateCf-b').type=="date"){
+        picked2=new Date(document.getElementById('uDateCf-b').value)
+    }else if(document.getElementById('uDateCf-b').type=="select-one"){
+        picked2=document.getElementById('uDateCf-b').value
+    }
+    }
+    if(picked.value!="default"){
+        if(picked.value=="Earliest"){
+            dat.sort(function(a,b){
+            return new Date(a.uDateCreated) - new Date(b.uDateCreated);
+        })
+        }else if(picked.value=="Latest"){
+            dat.sort(function(a,b){
+            return new Date(b.uDateCreated) - new Date(a.uDateCreated);
+        })
+        }
+        dat.forEach((item)=>{
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            let pDT=new Date(picked2)
+            pDT.setHours(0,0,0,0)
+            ufDT.setHours(0,0,0,0)
+            let ufDT=new Date(item.uDateCreated)
+            let rowString=filterTool(item.uName,item.uClass,item.uID,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            if((picked.value=="PreSpecDate" && ufDT<pDT) || (picked.value=="PostSpecDate" && ufDT>pDT) || (picked.value=="DuringSpecDate" && ufDT.getTime()==pDT.getTime())){
+                const row=document.createElement('tr')
+                row.innerHTML=rowString
+                tabul.appendChild(row)
+            }else if(picked.value=="Monthly"){
+                pDT.setMonth(picked2,1,2025)
+                if(ufDT.getMonth()==pDT.getMonth()){
+                    const row=document.createElement('tr')
+                row.innerHTML=rowString
+                tabul.appendChild(row)
+                }
+            }else if(picked.value=="Earliest" || picked.value=="Latest"){
+                const row=document.createElement('tr')
+                row.innerHTML=rowString
+                tabul.appendChild(row)
+            }
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+
+
+
+function dExamFilter(){
+    tabul.innerHTML=``
+    const picked=document.getElementById('uExSchedf').options[document.getElementById('uExSchedf').selectedIndex]
+    let picked2
+    if(document.getElementById('uExSchedf-b')){
+        if(document.getElementById('uExSchedf-b').type=="date"){
+        picked2=new Date(document.getElementById('uExSchedf-b').value)
+    }else if(document.getElementById('uExSchedf-b').type=="select-one"){
+        picked2=document.getElementById('uExSchedf-b').value
+    } 
+    }
+    if(picked.value!="default"){
+        if(picked.value=="Earliest"){
+            dat.sort(function(a,b){
+            return new Date(a.uExamSched) - new Date(b.uExamSched);
+        })
+        }else if(picked.value=="Latest"){
+            dat.sort(function(a,b){
+            return new Date(b.uExamSched) - new Date(a.uExamSched);
+        })
+        }
+        dat.forEach((item)=>{
+            let examAns=JSON.parse(item.uExamAns)
+            let examCheck=JSON.parse(item.uExamCheck)
+            let examVal=JSON.parse(item.uExamCheckVal)
+            let pDT=new Date(picked2)
+            let ufDT=new Date(item.uExamSched)
+            ufDT.setHours(0,0,0,0)
+            pDT.setHours(0,0,0,0)
+            let rowString=filterTool(item.uName,item.uID,item.uClass,item.uEmail,item.uExamSched,item.uExamStat,item.uExamScore,item.uExamPoints,item.uStat,examAns,examCheck,examVal)
+            
+            if((picked.value=="PreSpecDate" && ufDT<pDT) || (picked.value=="PostSpecDate" && ufDT>picked2) ||(picked.value=="DuringSpecDate" && ufDT.getTime()==pdt.getTime())){
+                    const row=document.createElement('tr')
+                    row.innerHTML=rowString
+                    tabul.appendChild(row)
+            }else if(picked.value=="Monthly"){
+                pDT.setMonth(picked2,1,2025)
+                if(fdt.getMonth()==pDT.getMonth()){
+                    const row=rowString
+                    tabul.appendChild(row)
+                }
+
+            }else if(picked.value=="Earliest" || picked.value=="Latest"){
+                const row=document.createElement('tr')
+            row.innerHTML=rowString
+            tabul.appendChild(row)
+            }
+        
+    })
+    if(tabul.innerHTML==''){
+            const row=document.createElement('tr')
+            row.innerHTML=`
+            <td style="padding-top:50px; padding-bottom:50px; font-family: Impact,  'Arial Narrow Bold', sans-serif;font-size:42px;" colspan="7" >-- { [ NO RECORDS FOUND ] } --</td>
+            `
+            tabul.appendChild(row)
+        }
+    }else{
+        resetP()
+    }
+}
+
+async function insertL(logCont,logType){
+        function rollNum(){
+            var randNum=Math.floor(Math.random()*10)
+            return randNum;
+        }
+        var logDT=new Date()
+        let weekday
+        switch (logDT.getDay()) {
+            case 0:
+                weekday= "SUN";
+                break;
+            case 1:
+                weekday= "MON";
+                break;
+            case 2:
+                weekday= "TUES";
+                break;
+            case 3:
+                weekday= "WED";
+                break;
+            case 4:
+                weekday= "THURS";
+                break;
+            case 5:
+                weekday= "FRI";
+                break;
+            case 6:
+                weekday= "SAT";
+                break;
+            default:
+                    "ERROR"
+                    break;
+            }
+        let month,date
+        if((logDT.getMonth()+1)>=10){
+            month=(logDT.getMonth()+1)
+        }else{
+            month=String((logDT.getMonth()+1)).padStart(2,'0')
+        }
+        if(logDT.getDate()>=10){
+            date=logDT.getDate()
+        }else{
+            date=String(logDT.getDate()).padStart(2,'0')
+        }
+        var logID="LOG-"+weekday+"-"+month+"/"+date+"/"+logDT.getFullYear()+"-"+rollNum()+rollNum()+rollNum()+rollNum()
+        
+        const datum={
+            logID:logID,
+            logMssg:logCont,
+            logDate:logDT.toISOString().slice(0, 19).replace('T', ' '),
+            logType:logType
+        }
+        try{
+            const response=await fetch('/insertLog',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(datum)
+            })
+            const result=await response.json()
+            if(response.ok){
+                location.reload()
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+//#endregion
+//#endregion
+
+function generate(select){
+    let sectA=filterA.options[filterA.selectedIndex].textContent
+    if(sectA==""){
+        sectA="NO FILTER"
+    }
+    let sectB=""
+    let rem=document.querySelectorAll('[name=filterB]')
+    let count=0
+    if(rem){
+        rem.forEach((item)=>{
+            count=count+1
+            if(count>0){
+                sectB+=" "
+            }
+            if(item.type=="date" ||item.type=="text"){
+                sectB+=item.value
+            }else{
+                sectB+=item.options[item.selectedIndex].textContent
+            }
+        })
+    }
+        let cells=document.querySelectorAll('[name="toPrint"]')
+        let content=""
+        count=0
+        cells.forEach((item)=>{
+            count=count+1
+            if(count==1){
+                content+="<tr>"+item.outerHTML
+            }else if(count==6){
+                content+=item.outerHTML+"</tr>"
+                count=0
+            }else{
+                content+=item.outerHTML
+            }
+        })
+        count=6
+        const repName="Exam Applicants Report"
+        let headcells=document.querySelectorAll('[name="headRow"]')
+        let headR=""
+        headcells.forEach((item)=>{
+            headR+=item.outerHTML
+        })
+        let repFileName="Admin"
+    fetch('/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({sectA,sectB,content,repName,headR,count}),
+      })
+      .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      if(select=="PRINT"){
+        window.open(url, '_blank').print();
+      }else if(select=="EXPORT"){
+        const a = document.createElement('a');
+      a.href = url;
+      a.download = `${repFileName}-report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      }
+    })
+    .catch((error) => {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    });
+    }
+
+
+    fetch('/searchCurrentAdmin').then((response)=>{
+    if(response.ok){
+        return response.json();
+    }else{
+        throw new Error('Error Fetching Data. Check the Terminal')
+    }
+}).then((data)=>{
+    data.forEach((item)=>{
+        if(item.aClass!="Admin"){
+            let rem=document.querySelectorAll('[name=noMods]')
+            let hed=document.querySelector('[class=don]')
+            rem.forEach((item)=>{
+                item.parentNode.removeChild(item)
+            })
+        }
+    })
+})
+</script>
+</html>
